@@ -15,7 +15,7 @@ typedef struct {
 	void (*deInit)(void);
 	void (*tx)(uint8_t *data, uint16_t size, uint32_t timeout);
 	void (*rx)(uint8_t *data, uint16_t size, uint32_t timeout);
-	uint8_t (*dataAvailable)(void);
+	uint16_t (*dataAvailable)(void);
 } TMC_Connection;
 
 #endif /* HAL_TMC_CONNECTION_H_ */

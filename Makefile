@@ -68,7 +68,9 @@ C_SOURCES =  \
 	hal/tmc/SPI.c \
 	hal/tmc/UART.c \
 	hal/tmc/USB.c \
-	tmc/main.c
+	tmc/main.c \
+	TMC-API/tmc/ic/TMC5160/TMC5160.c
+	
 
 # ASM sources
 ASM_SOURCES =  \
@@ -134,7 +136,10 @@ C_INCLUDES =  \
 	-Ihal/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc \
 	-Ihal/config/Inc \
 	-Ihal/tmc \
-	-Itmc
+	-Itmc \
+	-I. \
+	-ITMC-API/tmc \
+	-ITMC-API
 
 
 # compile gcc flags

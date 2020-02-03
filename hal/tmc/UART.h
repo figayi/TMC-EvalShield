@@ -19,9 +19,16 @@ typedef struct {
 
 TMC_UART UART0;
 
-void UART_Init(void);
-void UART_deInit(void);
-void UART_tx(uint8_t *data, uint16_t size, uint32_t timeout);
-void UART_rx(uint8_t *data, uint16_t size, uint32_t timeout);
+void UART_Init(TMC_UART *interface);
+void UART_deInit(TMC_UART *interface);
+void UART_tx(TMC_UART *interface, uint8_t *data, uint16_t size, uint32_t timeout);
+void UART_rx(TMC_UART *interface, uint8_t *data, uint16_t size, uint32_t timeout);
+uint16_t UART_dataAvailable(TMC_UART *interface);
+
+void UART0_Init(void);
+void UART0_deInit(void);
+void UART0_tx(uint8_t *data, uint16_t size, uint32_t timeout);
+void UART0_rx(uint8_t *data, uint16_t size, uint32_t timeout);
+uint16_t UART0_dataAvailable(void);
 
 #endif /* HAL_TMC_UART_H_ */

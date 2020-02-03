@@ -7,38 +7,27 @@
 
 #include "UART.h"
 #include "Pins.h"
+#include "RXTX.h"
 
 TMC_UART UART0 = {
 	.con = {
-		.init = UART_Init,
-		.deInit = UART_deInit,
-		.tx = UART_tx,
-		.rx = UART_rx
+		.init = UART0_Init,
+		.deInit = UART0_deInit,
+		.tx = UART0_tx,
+		.rx = UART0_rx,
+		.dataAvailable = UART0_dataAvailable
 	}
 };
 
-void UART_tx(uint8_t *data, uint16_t size, uint32_t timeout)
-{
-	if (HAL_UART_Transmit(&UART0.huart, data, size, timeout) != HAL_OK)
-	{
-		Error_Handler();
-	}
-}
-
-void UART_rx(uint8_t *data, uint16_t size, uint32_t timeout)
-{
-	if (HAL_UART_Receive(&UART0.huart, data, size, timeout) != HAL_OK)
-	{
-		Error_Handler();
-	}
-}
+static TMC_RXTX_Buffer buf_rx;
+static uint8_t buffer[256];
 
 /**
   * @brief USART2 Initialization Function
   * @param None
   * @retval None
   */
-void UART_Init(void)
+void UART0_Init(void)
 {
 
   /* USER CODE BEGIN USART2_Init 0 */
@@ -62,14 +51,70 @@ void UART_Init(void)
   }
   /* USER CODE BEGIN USART2_Init 2 */
 
+  HAL_UART_Receive_DMA(&UART0.huart, &buffer[0], 256);
+
   /* USER CODE END USART2_Init 2 */
 
 }
 
-void UART_deInit(void)
+void UART0_deInit(void)
 {
 	if (HAL_UART_DeInit(&UART0.huart) != HAL_OK)
 	{
 		Error_Handler();
 	}
 }
+
+void UART0_tx(uint8_t *data, uint16_t size, uint32_t timeout)
+{
+	if (HAL_UART_Transmit(&UART0.huart, data, size, timeout) != HAL_OK)
+	{
+		Error_Handler();
+	}
+}
+
+void UART0_rx(uint8_t *data, uint16_t size, uint32_t timeout)
+{
+	if (HAL_UART_Receive(&UART0.huart, data, size, timeout) != HAL_OK)
+	{
+		Error_Handler();
+	}
+}
+
+uint16_t UART0_dataAvailable(void)
+{
+
+	return 0;
+}
+
+/**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+void UART_Init(TMC_UART *interface)
+{
+	interface->con.init();
+}
+
+void UART_deInit(TMC_UART *interface)
+{
+	interface->con.deInit();
+}
+
+void UART_tx(TMC_UART *interface, uint8_t *data, uint16_t size, uint32_t timeout)
+{
+	interface->con.tx(data, size, timeout);
+}
+
+void UART_rx(TMC_UART *interface, uint8_t *data, uint16_t size, uint32_t timeout)
+{
+	interface->con.rx(data, size, timeout);
+}
+
+uint16_t UART_dataAvailable(TMC_UART *interface)
+{
+	return interface->con.dataAvailable();
+}
+
+

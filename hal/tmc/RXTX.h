@@ -10,23 +10,15 @@
 
 #include "Definitions.h"
 
-typedef struct
-{
-	void (*init)();
-	void (*deInit)(void);
-	void (*tx)(uint8_t ch);
-	uint8_t (*rx)(uint8_t *ch);
-	void (*txN)(uint8_t *ch, unsigned char number);
-	uint8_t (*rxN)(uint8_t *ch, unsigned char number);
-	void (*clearBuffers)(void);
-	uint32_t (*bytesAvailable)(void);
-	uint32_t baudRate;
-} TMC_RXTX;
+#define TMC_RXTX_BUFFER_SIZE 1024
 
-typedef struct
-{
-	TMC_Buffer tx;
-	TMC_Buffer rx;
+typedef struct {
+	uint8_t buffer[TMC_RXTX_BUFFER_SIZE];
+	size_t pos;
+	size_t target;
 } TMC_RXTX_Buffer;
+
+void TMC_RXTX_writeBuffer(TMC_RXTX_Buffer *buffer, const uint8_t *data, size_t length);
+size_t TMC_RXTX_readBuffer(const TMC_RXTX_Buffer *buffer, uint8_t *data, size_t length);
 
 #endif /* HAL_TMC_RXTX_H_ */

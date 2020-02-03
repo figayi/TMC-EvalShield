@@ -29,6 +29,8 @@
 #include "UART.h"
 #include "USB.h"
 
+#include "ic/TMC5160/TMC5160.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,7 +94,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   GPIO_Init();
-  UART_Init();
+  UART0_Init();
   SPI1_Init();
   USB_Init();
   /* USER CODE BEGIN 2 */
@@ -103,17 +105,9 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  char test[] = "Dies ist ein Test.\r\n";
-  HAL_Delay(1000);
   while (1)
   {
-	  //HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 	  HAL_Delay(1000);
-
-	  //while(CDC_Transmit_FS(NULL, 0) == USBD_BUSY);
-	  CDC_Transmit_FS(test, strlen(test));
-
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
