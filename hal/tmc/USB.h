@@ -8,15 +8,26 @@
 #ifndef HAL_TMC_USB_H_
 #define HAL_TMC_USB_H_
 
-#include "RXTX.h"
+#include "Connection.h"
+#include "stm32f1xx.h"
+#include "stm32f1xx_hal.h"
+#include "usbd_def.h"
+#include "usbd_core.h"
+#include "usbd_desc.h"
+#include "usbd_cdc.h"
+#include "usbd_cdc_if.h"
 
 typedef struct {
-	TMC_RXTX RXTX;
-	USBD_HandleTypeDef hUsbDeviceFS;
+	TMC_Connection con;
+	USBD_HandleTypeDef *hUsbDeviceFS;
 } TMC_USB;
 
-TMC_USB USB;
+TMC_USB USB0;
+USBD_HandleTypeDef hUsbDeviceFS;
 
-void USB_DEVICE_Init(void);
+void USB_Init(void);
+void USB_deInit(void);
+void USB_rx(uint8_t *data, uint16_t size, uint32_t timeout);
+void USB_tx(uint8_t *data, uint16_t size, uint32_t timeout);
 
 #endif /* HAL_TMC_USB_H_ */

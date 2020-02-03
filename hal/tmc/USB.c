@@ -7,38 +7,49 @@
 
 #include "USB.h"
 #include "Pins.h"
-#include "stm32f1xx.h"
-#include "stm32f1xx_hal.h"
-#include "usbd_def.h"
-#include "usbd_core.h"
-#include "usbd_desc.h"
-#include "usbd_cdc.h"
-#include "usbd_cdc_if.h"
+
+TMC_USB USB0 = {
+	.con = {
+		.init = USB_Init,
+		.deInit = USB_deInit,
+		.rx = USB_rx,
+		.tx = USB_tx
+	},
+	.hUsbDeviceFS = &hUsbDeviceFS
+};
 
 /**
   * Init USB device Library, add supported class and start the library
   * @retval None
   */
-void USB_DEVICE_Init(void)
+void USB_Init(void)
 {
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	  GPIO_InitStruct.Pin = GPIO_PIN_9;
+	  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+	  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
   /* USER CODE BEGIN USB_DEVICE_Init_PreTreatment */
 
   /* USER CODE END USB_DEVICE_Init_PreTreatment */
 
   /* Init Device Library, add supported class and start the library. */
-  if (USBD_Init(&USB.hUsbDeviceFS, &FS_Desc, DEVICE_FS) != USBD_OK)
+  if (USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS) != USBD_OK)
   {
     Error_Handler();
   }
-  if (USBD_RegisterClass(&USB.hUsbDeviceFS, &USBD_CDC) != USBD_OK)
+  if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_CDC) != USBD_OK)
   {
     Error_Handler();
   }
-  if (USBD_CDC_RegisterInterface(&USB.hUsbDeviceFS, &USBD_Interface_fops_FS) != USBD_OK)
+  if (USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_Interface_fops_FS) != USBD_OK)
   {
     Error_Handler();
   }
-  if (USBD_Start(&USB.hUsbDeviceFS) != USBD_OK)
+  if (USBD_Start(&hUsbDeviceFS) != USBD_OK)
   {
     Error_Handler();
   }
@@ -46,4 +57,22 @@ void USB_DEVICE_Init(void)
   /* USER CODE BEGIN USB_DEVICE_Init_PostTreatment */
 
   /* USER CODE END USB_DEVICE_Init_PostTreatment */
+}
+
+void USB_deInit(void)
+{
+	if (USBD_Stop(&hUsbDeviceFS) != USBD_OK)
+	{
+		Error_Handler();
+	}
+}
+
+void USB_rx(uint8_t *data, uint16_t size, uint32_t timeout)
+{
+
+}
+
+void USB_tx(uint8_t *data, uint16_t size, uint32_t timeout)
+{
+
 }
