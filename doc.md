@@ -22,8 +22,7 @@ void UART_txN(TMC_UART *interface, uint8_t *data, uint16_t size, uint32_t timeou
 ```
 Both functions are used to receive/transmit a portion of data (starting at `&data[0]`) of size `size`.
 Receiving is made *asynchronous* with *DMA* while transmitting is *synchronous*.
-These functions can only be called after initialization of the TMC_UART interface. They can also be
-accessed from the more abstract Connection interface using `interface.con.rxN` and `interface.con.txN` respectively.
+These functions can only be called after initialization of the TMC_UART interface.
 
 ### SPI
 SPI communication is made via the *SPI1* module.
@@ -34,8 +33,7 @@ void SPI_txN(TMC_SPI *interface, uint8_t *data, uint16_t size, uint32_t timeout)
 ```
 Both functions are used to receive/transmit a portion of data (starting at `&data[0]`) of size `size`.
 Receiving and transmitting are both *synchronous*.
-These functions can only be called after initialization of the TMC_SPI interface. They can also be
-accessed from the more abstract Connection interface using `interface.con.rxN` and `interface.con.txN` respectively.
+These functions can only be called after initialization of the TMC_SPI interface.
 
 ### USB
 The USB connection is made via the *U(S)ART2* module. It is connected to the onboard ST-LINK,
