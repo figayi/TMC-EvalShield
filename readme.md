@@ -10,7 +10,7 @@ Currently only Nucleo STM32F103XX is supported.
 ## Setup
 1. **Cloning**  
 1.1 **HTTPS**  
-`git clone --recurse-submodules https://github.com/trinamic/TMC-EvalShield.git`
+`git clone --recurse-submodules https://github.com/trinamic/TMC-EvalShield.git`  
 1.2 **SSH**  
 1.2.1 **Clone everything with HTTPS**  
 `git clone --recurse-submodules https://github.com/trinamic/TMC-EvalShield.git`  
