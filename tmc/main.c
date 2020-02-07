@@ -96,7 +96,8 @@ int main(void)
   GPIO_Init();
   UART0_Init();
   SPI1_Init();
-  USB_Init();
+  //USB_Init();
+
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -105,9 +106,17 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
   while (1)
   {
-	  HAL_Delay(1000);
+	  UART0_rxN(NULL, 10, 1000);
+	  while(UART0_dataAvailable() != 10);
+	  UART0_txN(UART0.buffer_rx.buffer, 10, 1000);
+
+	  asm volatile("nop");
+	  //while(UART0_dataAvailable() != 10);
+	  //UART0_txN(UART0.buffer_rx.buffer, 10, 1000);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

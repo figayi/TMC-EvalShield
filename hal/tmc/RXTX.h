@@ -19,6 +19,8 @@ typedef struct {
 } TMC_RXTX_Buffer;
 
 void TMC_RXTX_writeBuffer(TMC_RXTX_Buffer *buffer, const uint8_t *data, size_t length);
-size_t TMC_RXTX_readBuffer(const TMC_RXTX_Buffer *buffer, uint8_t *data, size_t length);
+size_t TMC_RXTX_readBuffer(TMC_RXTX_Buffer *buffer, uint8_t *data, size_t length);
+size_t TMC_RXTX_dataAvailable(const TMC_RXTX_Buffer *buffer);
+void TMC_RXTX_resetBuffer(TMC_RXTX_Buffer *buffer);
 
 #endif /* HAL_TMC_RXTX_H_ */

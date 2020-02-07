@@ -8,6 +8,8 @@
 #ifndef HAL_TMC_PINS_H_
 #define HAL_TMC_PINS_H_
 
+#include "GPIO.h"
+
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC
 #define B1_EXTI_IRQn EXTI15_10_IRQn

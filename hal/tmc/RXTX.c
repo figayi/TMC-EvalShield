@@ -15,7 +15,7 @@ void TMC_RXTX_writeBuffer(TMC_RXTX_Buffer *buffer, const uint8_t *data, size_t l
 	}
 }
 
-size_t TMC_RXTX_readBuffer(const TMC_RXTX_Buffer *buffer, uint8_t *data, size_t length)
+size_t TMC_RXTX_readBuffer(TMC_RXTX_Buffer *buffer, uint8_t *data, size_t length)
 {
 	for(size_t i = 0; i < length; i++) {
 		if(buffer->pos == buffer->target)
@@ -24,4 +24,20 @@ size_t TMC_RXTX_readBuffer(const TMC_RXTX_Buffer *buffer, uint8_t *data, size_t 
 		buffer->pos = (buffer->pos + 1) % TMC_RXTX_BUFFER_SIZE;
 	}
 	return length;
+}
+
+size_t TMC_RXTX_dataAvailable(const TMC_RXTX_Buffer *buffer)
+{
+	size_t size = 0;
+	if((buffer->target) >= (buffer->pos)) {
+		size = (buffer->target - buffer->pos);
+	} else {
+		size = (TMC_RXTX_BUFFER_SIZE - (buffer->pos - buffer->target));
+	}
+	return size;
+}
+
+void TMC_RXTX_resetBuffer(TMC_RXTX_Buffer *buffer)
+{
+	buffer->pos = buffer->target = 0;
 }

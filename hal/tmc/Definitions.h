@@ -9,6 +9,7 @@
 #define HAL_TMC_DEFINITIONS_H_
 
 #include <stdint.h>
+#include <stddef.h>
 
 typedef struct {
 	unsigned int read;

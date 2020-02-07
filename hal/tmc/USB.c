@@ -11,9 +11,7 @@
 TMC_USB USB0 = {
 	.con = {
 		.init = USB_Init,
-		.deInit = USB_deInit,
-		.rx = USB_rx,
-		.tx = USB_tx
+		.deInit = USB_deInit
 	},
 	.hUsbDeviceFS = &hUsbDeviceFS
 };
@@ -65,14 +63,4 @@ void USB_deInit(void)
 	{
 		Error_Handler();
 	}
-}
-
-void USB_rx(uint8_t *data, uint16_t size, uint32_t timeout)
-{
-
-}
-
-void USB_tx(uint8_t *data, uint16_t size, uint32_t timeout)
-{
-
 }

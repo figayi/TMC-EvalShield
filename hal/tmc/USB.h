@@ -27,7 +27,5 @@ USBD_HandleTypeDef hUsbDeviceFS;
 
 void USB_Init(void);
 void USB_deInit(void);
-void USB_rx(uint8_t *data, uint16_t size, uint32_t timeout);
-void USB_tx(uint8_t *data, uint16_t size, uint32_t timeout);
 
 #endif /* HAL_TMC_USB_H_ */
