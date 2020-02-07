@@ -20,11 +20,11 @@ git remote set-url origin git@github.com:trinamic/TMC-EvalShield.git
 cd TMC-API
 git remote set-url origin git@github.com:trinamic/TMC-API.git
 cd ..
-```
+```  
 2. **Building**  
 2.1 **Command Line**  
 To build this project in command line, a simple `cd <project root>` and `make` should do the job.  
-This requires paths to be set correctly.
+This requires paths to be set correctly.  
 2.2 **Eclipse**  
 To build this project in Eclipse IDE simply import the project via `File -> Import -> General -> Existing projects into workspace`.  
 After that, hit the build button to build the target *Default*, which should invoke the included Makefile.  
