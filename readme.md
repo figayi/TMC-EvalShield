@@ -31,4 +31,7 @@ After that, hit the build button to build the target *Default*, which should inv
 Eventually, you have to adjust the paths according to your environment.
 
 ## Documentation
-For documentation, read the file doc.md.
+For documentation, read doc.md.
+
+## Operational guide
+For an operational guide showing how to get started with the basics, read guide.md.
