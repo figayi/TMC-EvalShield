@@ -19,7 +19,9 @@ TMC_UART UART0 = {
 		.rxN = UART0_rxN,
 		.rx = UART0_rx,
 		.dataAvailable = UART0_dataAvailable,
-		.status = TMC_CONNECTION_STATUS_READY
+		.resetBuffers = UART0_resetBuffers,
+		.status = TMC_CONNECTION_STATUS_READY,
+		.continuous = 0
 	}
 };
 
@@ -42,7 +44,7 @@ void UART0_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   UART0.huart.Instance = USART2;
-  UART0.huart.Init.BaudRate = 115200;
+  UART0.huart.Init.BaudRate = 9600;
   UART0.huart.Init.WordLength = UART_WORDLENGTH_8B;
   UART0.huart.Init.StopBits = UART_STOPBITS_1;
   UART0.huart.Init.Parity = UART_PARITY_NONE;
@@ -89,11 +91,11 @@ void UART0_txN(uint8_t *data, uint16_t size, uint32_t timeout)
 void UART0_rxN(uint8_t *data, uint16_t size, uint32_t timeout)
 {
 	UNUSED(timeout);
-	if(UART0.con.status == TMC_CONNECTION_STATUS_BUSY)
-		return;
-	UART0.word = size;
-	TMC_RXTX_resetBuffer(&UART0.buffer_rx);
-	if (HAL_UART_Receive_DMA(&UART0.huart, data ? data : (&UART0.buffer_rx.buffer[0]), size) == HAL_OK)
+	//if(UART0.con.status == TMC_CONNECTION_STATUS_BUSY)
+		//return;
+	UART0.con.word = size;
+	//TMC_RXTX_resetBuffer(&UART0.buffer_rx);
+	if (HAL_UART_Receive_DMA(&UART0.huart, data ? data : (&UART0.buffer_rx.buffer[0]), data ? size : TMC_RXTX_BUFFER_SIZE) == HAL_OK)
 		UART0.con.status = TMC_CONNECTION_STATUS_BUSY;
 	else
 		Error_Handler();
@@ -102,14 +104,29 @@ void UART0_rxN(uint8_t *data, uint16_t size, uint32_t timeout)
 uint8_t UART0_rx(void)
 {
 	uint8_t d = 0xFF;
-	if(UART0_dataAvailable())
+	if(UART0_dataAvailable()) {
 		TMC_RXTX_readBuffer(&UART0.buffer_rx, &d, 1);
+	}
 	return d;
 }
 
 size_t UART0_dataAvailable(void)
 {
+	size_t delta = 0;
+	uint32_t cndtr = UART0.hdma_rx.Instance->CNDTR;
+	if(UART0.cndtr >= cndtr)
+		delta = UART0.cndtr - cndtr;
+	else
+		delta = TMC_RXTX_BUFFER_SIZE - (cndtr - UART0.cndtr);
+	UART0.buffer_rx.target = (UART0.buffer_rx.target + delta) % TMC_RXTX_BUFFER_SIZE;
+	UART0.cndtr = cndtr;
 	return TMC_RXTX_dataAvailable(&UART0.buffer_rx);
+}
+
+void UART0_resetBuffers(void)
+{
+	HAL_UART_DMAResume(&UART0.huart);
+	//TMC_RXTX_resetBuffer(&UART0.buffer_rx);
 }
 
 /**
@@ -147,6 +164,11 @@ size_t UART_dataAvailable(TMC_UART *interface)
 	return interface->con.dataAvailable();
 }
 
+void UART_resetBuffers(TMC_UART *interface)
+{
+	return interface->con.resetBuffers();
+}
+
 /**
 * @brief UART MSP Initialization
 * This function configures the hardware resources used in this example
@@ -182,8 +204,8 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 		UART0.hdma_rx.Init.MemInc = DMA_MINC_ENABLE;
 		UART0.hdma_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
 		UART0.hdma_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-		UART0.hdma_rx.Init.Mode = DMA_NORMAL;
-		UART0.hdma_rx.Init.Priority = DMA_PRIORITY_LOW;
+		UART0.hdma_rx.Init.Mode = DMA_CIRCULAR;
+		UART0.hdma_rx.Init.Priority = DMA_PRIORITY_VERY_HIGH;
 		if (HAL_DMA_Init(&UART0.hdma_rx) != HAL_OK)
 		{
 			Error_Handler();
@@ -230,8 +252,14 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	if(huart == &UART0.huart) {
-		UART0.buffer_rx.target = (UART0.buffer_rx.target + UART0.word) % TMC_RXTX_BUFFER_SIZE;
-		UART0.con.status = TMC_CONNECTION_STATUS_READY;
-	}
+//	TMC_RXTX_incrementBuffer(&UART0.buffer_rx, UART0.con.word);
+//	if(UART0.con.continuous)
+//		UART0_rxN(NULL, UART0.con.word, 0);
+	//HAL_UART_DMAPause(huart);
+//	if(huart == &UART0.huart) {
+//		TMC_RXTX_incrementBuffer(&UART0.buffer_rx, UART0.con.word);
+//		UART0.con.status = TMC_CONNECTION_STATUS_READY;
+//		if(UART0.con.continuous)
+//			UART0_rxN(NULL, UART0.con.word, 0);
+//	}
 }

@@ -63,11 +63,15 @@ C_SOURCES += hal/config/Src/system_stm32f1xx.c
 C_SOURCES += hal/config/Src/usbd_conf.c
 C_SOURCES += hal/config/Src/usbd_desc.c
 C_SOURCES += hal/config/Src/usbd_cdc_if.c
+C_SOURCES += hal/tmc/Connection.c
 C_SOURCES += hal/tmc/GPIO.c
 C_SOURCES += hal/tmc/SPI.c
 C_SOURCES += hal/tmc/UART.c
 C_SOURCES += hal/tmc/RXTX.c
 C_SOURCES += hal/tmc/USB.c
+C_SOURCES += tmc/boards/Board.c
+C_SOURCES += tmc/boards/TMC5160_eval.c
+C_SOURCES += tmc/TMCL.c
 C_SOURCES += tmc/main.c
 C_SOURCES += TMC-API/tmc/ic/TMC5160/TMC5160.c
 	

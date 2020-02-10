@@ -28,42 +28,15 @@
 #include "SPI.h"
 #include "UART.h"
 #include "USB.h"
+#include "TMCL.h"
+#include "boards/Board.h"
 
 #include "ic/TMC5160/TMC5160.h"
-
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */
+#include "helpers/Config.h"
 
 void SystemClock_Config(void);
 
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
+const char *VersionString = MODULE_ID"V308";
 
 /**
   * @brief  The application entry point.
@@ -98,6 +71,11 @@ int main(void)
   SPI1_Init();
   //USB_Init();
 
+  ConfigurationTypeDef config;
+  board.config = &config;
+  Board_init(&board);
+  tmcl_init();
+
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -106,14 +84,13 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  volatile size_t c = 0;
 
   while (1)
   {
-	  UART0_rxN(NULL, 10, 1000);
-	  while(UART0_dataAvailable() != 10);
-	  UART0_txN(UART0.buffer_rx.buffer, 10, 1000);
-
-	  asm volatile("nop");
+	  c++;
+		tmcl_process();
+		//board.periodicJob(HAL_GetTick());
 	  //while(UART0_dataAvailable() != 10);
 	  //UART0_txN(UART0.buffer_rx.buffer, 10, 1000);
 
@@ -185,6 +162,19 @@ void Error_Handler(void)
 	while(1);
 
   /* USER CODE END Error_Handler_Debug */
+}
+
+void deInit(void)
+{
+	//GPIO_deInit();
+	UART0_deInit();
+	//SPI1_deInit();
+}
+
+void reset(void)
+{
+	deInit();
+	main();
 }
 
 #ifdef  USE_FULL_ASSERT

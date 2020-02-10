@@ -13,6 +13,10 @@ This interface is generally stored in communication modules structs as `struct.c
 After initialization, `con.rxN` and `con.txN` can be used for communication, so the application does not have to
 hassle with multiple interfaces, each with its own communication functions.
 
+#### Limitations / Pitfalls
+TMC Connection RXTX buffer size is limited to 1024 bytes by default. It can be adjusted by defining `TMC_RXTX_BUFFER_SIZE`.  
+However, this buffer size limits the amount of data that can be handled in one RX request and buffer readout cycle.
+
 ### UART
 Regular UART communication is made via the *U(S)ART3* module.  
 UART utilizes the TMC Connection interface. Core communication functions are:

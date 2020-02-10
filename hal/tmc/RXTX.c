@@ -29,7 +29,7 @@ size_t TMC_RXTX_readBuffer(TMC_RXTX_Buffer *buffer, uint8_t *data, size_t length
 size_t TMC_RXTX_dataAvailable(const TMC_RXTX_Buffer *buffer)
 {
 	size_t size = 0;
-	if((buffer->target) >= (buffer->pos)) {
+	if(buffer->target >= buffer->pos) {
 		size = (buffer->target - buffer->pos);
 	} else {
 		size = (TMC_RXTX_BUFFER_SIZE - (buffer->pos - buffer->target));
@@ -40,4 +40,9 @@ size_t TMC_RXTX_dataAvailable(const TMC_RXTX_Buffer *buffer)
 void TMC_RXTX_resetBuffer(TMC_RXTX_Buffer *buffer)
 {
 	buffer->pos = buffer->target = 0;
+}
+
+void TMC_RXTX_incrementBuffer(TMC_RXTX_Buffer *buffer, size_t length)
+{
+	buffer->target = (buffer->target + length) % TMC_RXTX_BUFFER_SIZE;
 }

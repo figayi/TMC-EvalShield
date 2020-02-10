@@ -1,7 +1,7 @@
 # TMC-EvalShield
 
 ## Abstract
-The TMC-EvalShield is the TRINAMIC Evaluation Firmware for ST STM32-Nucleo boards.  
+The TMC-EvalShield is the TRINAMIC Evaluation Firmware for STMicroelectronics STM32-Nucleo boards.  
 This aims to simplify the evaluation process of our motion controller shields.  
 
 ## Current state

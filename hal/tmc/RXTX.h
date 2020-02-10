@@ -10,7 +10,9 @@
 
 #include "Definitions.h"
 
+#ifndef TMC_RXTX_BUFFER_SIZE
 #define TMC_RXTX_BUFFER_SIZE 1024
+#endif
 
 typedef struct {
 	uint8_t buffer[TMC_RXTX_BUFFER_SIZE];
@@ -18,6 +20,7 @@ typedef struct {
 	size_t target;
 } TMC_RXTX_Buffer;
 
+void TMC_RXTX_incrementBuffer(TMC_RXTX_Buffer *buffer, size_t length);
 void TMC_RXTX_writeBuffer(TMC_RXTX_Buffer *buffer, const uint8_t *data, size_t length);
 size_t TMC_RXTX_readBuffer(TMC_RXTX_Buffer *buffer, uint8_t *data, size_t length);
 size_t TMC_RXTX_dataAvailable(const TMC_RXTX_Buffer *buffer);
