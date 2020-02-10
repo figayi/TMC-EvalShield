@@ -17,17 +17,21 @@ TMC_UART UART0 = {
 		.deInit = UART0_deInit,
 		.txRequest = UART0_txRequest,
 		.rxRequest = UART0_rxRequest,
-		.txN = UART0_txN,
+		.txrx = Connection_txrx,
+		.txN = Connection_txN,
 		.rxN = UART0_rxN,
 		.rx = UART0_rx,
 		.dataAvailable = UART0_dataAvailable,
 		.resetBuffers = UART0_resetBuffers,
-		.status = TMC_CONNECTION_STATUS_READY,
-		.continuous = 0
+		.status = TMC_CONNECTION_STATUS_READY
 	}
 };
 
 static void UART0_DMA_Init(void);
+
+////////////////////////////////////////////////////////////////////////////////
+// Specific functions
+////////////////////////////////////////////////////////////////////////////////
 
 void UART0_Init(void) {
 	UART0_DMA_Init();
@@ -78,10 +82,6 @@ void UART0_rxRequest(uint8_t *data, uint16_t size, uint32_t timeout) {
 		Error_Handler();
 }
 
-void UART0_txN(size_t size) {
-	UNUSED(size);
-}
-
 void UART0_rxN(uint8_t *data, size_t size) {
 	if(UART0_dataAvailable() >= size)
 		TMC_RXTX_readBuffer(&UART0.buffer_rx, data, size);
@@ -111,6 +111,10 @@ size_t UART0_dataAvailable(void) {
 void UART0_resetBuffers(void) {
 	TMC_RXTX_resetBuffer(&UART0.buffer_rx);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Generic functions
+////////////////////////////////////////////////////////////////////////////////
 
 void UART_Init(TMC_UART *interface) {
 	interface->con.init();

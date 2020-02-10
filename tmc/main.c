@@ -22,14 +22,13 @@ void SystemClock_Config(void);
 const char *VersionString = MODULE_ID"V308";
 
 int main(void) {
-
 	HAL_Init();
 
 	SystemClock_Config();
 
 	GPIO_Init();
 	UART0_Init();
-	SPI1_Init();
+	SPI0_Init();
 	//USB_Init();
 
 	ConfigurationTypeDef config;
