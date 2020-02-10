@@ -11,7 +11,7 @@
 #include "Definitions.h"
 
 #ifndef TMC_RXTX_BUFFER_SIZE
-#define TMC_RXTX_BUFFER_SIZE 1024
+#define TMC_RXTX_BUFFER_SIZE 50
 #endif
 
 typedef struct {

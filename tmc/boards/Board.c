@@ -13,8 +13,8 @@ void Board_init(TMC_Board *board)
 {
 #ifdef BOARD
 #ifdef TMC5160_shield
-	//TMC5160_init(board);
-	board_setDummyFunctions(board);
+	TMC5160_init(board);
+	//board_setDummyFunctions(board);
 #endif
 #else
 	board_setDummyFunctions(board);

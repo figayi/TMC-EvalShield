@@ -7,9 +7,71 @@
 
 #include "GPIO.h"
 
+TMC_Pin pins[TMC_PIN_COUNT] = {
+	// Blue button interrupt
+	{
+		.pin = GPIO_PIN_13,
+		.port = GPIOC,
+		.init = {
+			.Pin = GPIO_PIN_13,
+			.Mode = GPIO_MODE_IT_RISING,
+			.Pull = GPIO_NOPULL
+		},
+		.isGPIO = 0
+	},
+	// SPI0 Chip Select
+	{
+		.pin = GPIO_PIN_6,
+		.port = GPIOB,
+		.init = {
+			.Pin = GPIO_PIN_6,
+			.Mode = GPIO_MODE_OUTPUT_PP,
+			.Pull = GPIO_PULLUP,
+			.Speed = GPIO_SPEED_FREQ_LOW
+		},
+		.isGPIO = 1,
+		.resetState = GPIO_PIN_SET
+	},
+	// SPI1 Chip Select
+	{
+		.pin = GPIO_PIN_7,
+		.port = GPIOC,
+		.init = {
+			.Pin = GPIO_PIN_7,
+			.Mode = GPIO_MODE_OUTPUT_PP,
+			.Pull = GPIO_PULLUP,
+			.Speed = GPIO_SPEED_FREQ_LOW
+		},
+		.isGPIO = 1,
+		.resetState = GPIO_PIN_SET
+	},
+	// SPI2 Chip Select
+	{
+		.pin = GPIO_PIN_9,
+		.port = GPIOA,
+		.init = {
+			.Pin = GPIO_PIN_9,
+			.Mode = GPIO_MODE_OUTPUT_PP,
+			.Pull = GPIO_PULLUP,
+			.Speed = GPIO_SPEED_FREQ_LOW
+		},
+		.isGPIO = 1,
+		.resetState = GPIO_PIN_SET
+	}
+};
+
 void GPIO_initPin(TMC_Pin *pin)
 {
 	HAL_GPIO_Init(pin->port, &pin->init);
+	HAL_GPIO_WritePin(pin->port, pin->pin, pin->resetState);
+}
+
+TMC_Pin *GPIO_getPin(GPIO_TypeDef *port, uint32_t number)
+{
+	for(size_t i = 0; i < TMC_PIN_COUNT; i++)
+		if((pins[i].port == port) && (pins[i].pin == number))
+			return &pins[i];
+	return NULL;
 }
 
 void GPIO_setToInput(TMC_Pin *pin)
@@ -41,65 +103,23 @@ void GPIO_setFloating(TMC_Pin *pin)
 	// TODO
 }
 
+void GPIO_init(void) {
+
+}
+
 /**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
   */
-void GPIO_Init(void)
-{
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
-
+void GPIO_Init(void) {
 	/* GPIO Ports Clock Enable */
 	__HAL_RCC_GPIOC_CLK_ENABLE();
 	__HAL_RCC_GPIOD_CLK_ENABLE();
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1|GPIO_PIN_7, GPIO_PIN_RESET);
-
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
-
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
-
-	/*Configure GPIO pin : B1_Pin */
-	GPIO_InitStruct.Pin = B1_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
-
-	/*Configure GPIO pin : PC0 */
-	GPIO_InitStruct.Pin = GPIO_PIN_0;
-	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-	/*Configure GPIO pins : PC1 PC7 */
-	GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_7;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-	/*Configure GPIO pin : PA9 */
-	GPIO_InitStruct.Pin = GPIO_PIN_9;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-	/*Configure GPIO pin : PB6 */
-	GPIO_InitStruct.Pin = GPIO_PIN_6;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
 	/* EXTI interrupt init*/
 	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-
 }

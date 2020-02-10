@@ -264,27 +264,27 @@ void ExecuteActualCommand()
 	switch(ActualCommand.Opcode)
 	{
 	case TMCL_ROR:
-		setTMCLStatus(board.right(ActualCommand.Motor, ActualCommand.Value.Int32));
+		setTMCLStatus(board[ActualCommand.Motor].right(ActualCommand.Motor, ActualCommand.Value.Int32));
 		break;
 	case TMCL_ROL:
-		setTMCLStatus(board.left(ActualCommand.Motor, ActualCommand.Value.Int32));
+		setTMCLStatus(board[ActualCommand.Motor].left(ActualCommand.Motor, ActualCommand.Value.Int32));
 		break;
 	case TMCL_MST:
-		setTMCLStatus(board.stop(ActualCommand.Motor));
+		setTMCLStatus(board[ActualCommand.Motor].stop(ActualCommand.Motor));
 		break;
 	case TMCL_MVP:
 		// if function doesn't exist for ch1 try ch2
 		switch(ActualCommand.Type)
 		{
 		case MVP_ABS: // move absolute
-			setTMCLStatus(board.moveTo(ActualCommand.Motor, ActualCommand.Value.Int32));
+			setTMCLStatus(board[ActualCommand.Motor].moveTo(ActualCommand.Motor, ActualCommand.Value.Int32));
 			break;
 		case MVP_REL: // move relative
-			setTMCLStatus(board.moveBy(ActualCommand.Motor, &ActualCommand.Value.Int32));
+			setTMCLStatus(board[ActualCommand.Motor].moveBy(ActualCommand.Motor, &ActualCommand.Value.Int32));
 			ActualReply.Value.Int32 = ActualCommand.Value.Int32;
 			break;
 		case MVP_PRF:
-			setTMCLStatus(board.moveProfile(ActualCommand.Motor, ActualCommand.Value.Int32));
+			setTMCLStatus(board[ActualCommand.Motor].moveProfile(ActualCommand.Motor, ActualCommand.Value.Int32));
 			break;
 		default:
 			ActualReply.Status = REPLY_INVALID_TYPE;
@@ -292,10 +292,10 @@ void ExecuteActualCommand()
 		}
 		break;
 	case TMCL_SAP:
-		setTMCLStatus(board.SAP(ActualCommand.Type, ActualCommand.Motor, ActualCommand.Value.Int32));
+		setTMCLStatus(board[ActualCommand.Motor].SAP(ActualCommand.Type, ActualCommand.Motor, ActualCommand.Value.Int32));
 		break;
 	case TMCL_GAP:
-		setTMCLStatus(board.GAP(ActualCommand.Type, ActualCommand.Motor, &ActualReply.Value.Int32));
+		setTMCLStatus(board[ActualCommand.Motor].GAP(ActualCommand.Type, ActualCommand.Motor, &ActualReply.Value.Int32));
 		break;
 	case TMCL_SGP:
 		SetGlobalParameter();
@@ -310,13 +310,13 @@ void ExecuteActualCommand()
 		setDriversEnable();
 		break;
 	case TMCL_UF4:
-		setTMCLStatus(board.getMeasuredSpeed(ActualCommand.Motor, &ActualReply.Value.Int32));
+		setTMCLStatus(board[ActualCommand.Motor].getMeasuredSpeed(ActualCommand.Motor, &ActualReply.Value.Int32));
 		break;
 	case TMCL_UF5:
-		board.writeRegister(ActualCommand.Motor, ActualCommand.Type, ActualCommand.Value.Int32);
+		board[ActualCommand.Motor].writeRegister(ActualCommand.Motor, ActualCommand.Type, ActualCommand.Value.Int32);
 		break;
 	case TMCL_UF6:
-		board.readRegister(ActualCommand.Motor, ActualCommand.Type, &ActualReply.Value.Int32);
+		board[ActualCommand.Motor].readRegister(ActualCommand.Motor, ActualCommand.Type, &ActualReply.Value.Int32);
 		break;
 	case TMCL_GetVersion:
 		GetVersion();
@@ -326,19 +326,19 @@ void ExecuteActualCommand()
 		break;
 	case TMCL_UF_CH1:
 		// user function for motionController board
-		setTMCLStatus(board.userFunction(ActualCommand.Type, ActualCommand.Motor, &ActualCommand.Value.Int32));
+		setTMCLStatus(board[ActualCommand.Motor].userFunction(ActualCommand.Type, ActualCommand.Motor, &ActualCommand.Value.Int32));
 		ActualReply.Value.Int32 = ActualCommand.Value.Int32;
 		break;
 	case TMCL_UF_CH2:
 		// user function for driver board
-		setTMCLStatus(board.userFunction(ActualCommand.Type, ActualCommand.Motor, &ActualCommand.Value.Int32));
+		setTMCLStatus(board[ActualCommand.Motor].userFunction(ActualCommand.Type, ActualCommand.Motor, &ActualCommand.Value.Int32));
 		ActualReply.Value.Int32 = ActualCommand.Value.Int32;
 		break;
 	case TMCL_writeRegisterChannel_1:
-		board.writeRegister(ActualCommand.Motor, ActualCommand.Type, ActualCommand.Value.Int32);
+		board[ActualCommand.Motor].writeRegister(ActualCommand.Motor, ActualCommand.Type, ActualCommand.Value.Int32);
 		break;
 	case TMCL_readRegisterChannel_1:
-		board.readRegister(ActualCommand.Motor, ActualCommand.Type, &ActualReply.Value.Int32);
+		board[ActualCommand.Motor].readRegister(ActualCommand.Motor, ActualCommand.Type, &ActualReply.Value.Int32);
 		break;
 	case TMCL_BoardMeasuredSpeed:
 		// measured speed from motionController board or driver board depending on type
@@ -353,10 +353,10 @@ void ExecuteActualCommand()
 		boardsReset();
 		break;
 	case TMCL_MIN:
-		setTMCLStatus(board.getMin(ActualCommand.Type, ActualCommand.Motor, &ActualReply.Value.Int32));
+		setTMCLStatus(board[ActualCommand.Motor].getMin(ActualCommand.Type, ActualCommand.Motor, &ActualReply.Value.Int32));
 		break;
 	case TMCL_MAX:
-		setTMCLStatus(board.getMax(ActualCommand.Type, ActualCommand.Motor, &ActualReply.Value.Int32));
+		setTMCLStatus(board[ActualCommand.Motor].getMax(ActualCommand.Type, ActualCommand.Motor, &ActualReply.Value.Int32));
 		break;
 	case TMCL_SoftwareReset:
 		SoftwareReset();
@@ -494,7 +494,7 @@ static void GetGlobalParameter()
 		ActualReply.Value.Int32 = 73;
 		break;
 	case 2:
-		ActualReply.Value.Int32 = (board.driverState == DRIVER_ENABLE)? 1:0;
+		ActualReply.Value.Int32 = (board[0].driverState == DRIVER_ENABLE)? 1:0;
 		break;
 	case 3:
 		ActualReply.Value.Int32 = 0;
@@ -531,7 +531,7 @@ static void boardsErrors(void)
 	switch(ActualCommand.Type)
 	{
 	case 0:
-		ActualReply.Value.Int32 = board.errors;
+		ActualReply.Value.Int32 = board[ActualCommand.Motor].errors;
 		break;
 	default:
 		ActualReply.Status = REPLY_INVALID_TYPE;
@@ -543,11 +543,11 @@ static void boardsReset(void)
 {
 	switch(ActualCommand.Type) {
 	case 0:
-		if(!board.config->reset())
+		if(!board[ActualCommand.Motor].config->reset())
 			ActualReply.Status = REPLY_WRITE_PROTECTED;
 		break;
 	case 2:
-		if(!board.config->reset())
+		if(!board[ActualCommand.Motor].config->reset())
 			ActualReply.Status = REPLY_WRITE_PROTECTED;
 		break;
 	default:
@@ -561,7 +561,7 @@ static void boardsMeasuredSpeed(void)
 	switch(ActualCommand.Type)
 	{
 	case 0:
-		ActualReply.Status = board.getMeasuredSpeed(ActualCommand.Motor, &ActualReply.Value.Int32);
+		ActualReply.Status = board[ActualCommand.Motor].getMeasuredSpeed(ActualCommand.Motor, &ActualReply.Value.Int32);
 		break;
 	default:
 		ActualReply.Status = REPLY_INVALID_TYPE;
@@ -571,8 +571,10 @@ static void boardsMeasuredSpeed(void)
 
 static void setDriversEnable()
 {
-	board.driverState = (ActualCommand.Value.Int32 == 0) ? DRIVER_DISABLE : DRIVER_ENABLE;
-	board.enableDriver(DRIVER_USE_GLOBAL_ENABLE);
+	for(size_t i = 0; i < TMC_AXES_COUNT; i++) {
+		board[i].driverState = (ActualCommand.Value.Int32 == 0) ? DRIVER_DISABLE : DRIVER_ENABLE;
+		board[i].enableDriver(DRIVER_USE_GLOBAL_ENABLE);
+	}
 }
 
 static void SoftwareReset(void)

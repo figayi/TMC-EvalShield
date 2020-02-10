@@ -6,25 +6,65 @@
  */
 
 #include "SPI.h"
-#include "Pins.h"
 #include "stm32f1xx_hal.h"
 #include "stm32f1xx_hal_spi.h"
 
 extern void Error_Handler(void);
 
-TMC_SPI SPI0 = {
-	.con = {
-		.init = SPI0_Init,
-		.deInit = SPI0_deInit,
-		.txRequest = SPI0_txRequest,
-		.rxRequest = SPI0_rxRequest,
-		.txrx = SPI0_txrx,
-		.txN = Connection_txN,
-		.rxN = Connection_rxN,
-		.rx = Connection_rx,
-		.dataAvailable = Connection_dataAvailable,
-		.resetBuffers = Connection_resetBuffers,
-		.status = TMC_CONNECTION_STATUS_READY
+static SPI_HandleTypeDef hspi;
+static uint8_t initialized = 0;
+
+TMC_SPI TMC_SPI_Channel[TMC_SPI_CHANNELS] = {
+	{
+		.con = {
+			.init = SPIX_init,
+			.deInit = SPIX_deInit,
+			.txRequest = SPI0_txRequest,
+			.rxRequest = SPI0_rxRequest,
+			.txrx = SPI0_txrx,
+			.txN = Connection_txN,
+			.rxN = Connection_rxN,
+			.rx = Connection_rx,
+			.dataAvailable = Connection_dataAvailable,
+			.resetBuffers = Connection_resetBuffers,
+			.status = TMC_CONNECTION_STATUS_READY
+		},
+		.hspi = &hspi,
+		.cs = &pins[1]
+	},
+	{
+		.con = {
+			.init = SPIX_init,
+			.deInit = SPIX_deInit,
+			.txRequest = SPI1_txRequest,
+			.rxRequest = SPI1_rxRequest,
+			.txrx = SPI1_txrx,
+			.txN = Connection_txN,
+			.rxN = Connection_rxN,
+			.rx = Connection_rx,
+			.dataAvailable = Connection_dataAvailable,
+			.resetBuffers = Connection_resetBuffers,
+			.status = TMC_CONNECTION_STATUS_READY
+		},
+		.hspi = &hspi,
+		.cs = &pins[2]
+	},
+	{
+		.con = {
+			.init = SPIX_init,
+			.deInit = SPIX_deInit,
+			.txRequest = SPI2_txRequest,
+			.rxRequest = SPI2_rxRequest,
+			.txrx = SPI2_txrx,
+			.txN = Connection_txN,
+			.rxN = Connection_rxN,
+			.rx = Connection_rx,
+			.dataAvailable = Connection_dataAvailable,
+			.resetBuffers = Connection_resetBuffers,
+			.status = TMC_CONNECTION_STATUS_READY
+		},
+		.hspi = &hspi,
+		.cs = &pins[3]
 	}
 };
 
@@ -32,48 +72,115 @@ TMC_SPI SPI0 = {
 // Specific functions
 ////////////////////////////////////////////////////////////////////////////////
 
-void SPI0_Init(void) {
-	/* SPI1 parameter configuration*/
-	SPI0.hspi.Instance = SPI1;
-	SPI0.hspi.Init.Mode = SPI_MODE_MASTER;
-	SPI0.hspi.Init.Direction = SPI_DIRECTION_2LINES;
-	SPI0.hspi.Init.DataSize = SPI_DATASIZE_8BIT;
-	SPI0.hspi.Init.CLKPolarity = SPI_POLARITY_LOW;
-	SPI0.hspi.Init.CLKPhase = SPI_PHASE_1EDGE;
-	SPI0.hspi.Init.NSS = SPI_NSS_HARD_OUTPUT;
-	SPI0.hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
-	SPI0.hspi.Init.FirstBit = SPI_FIRSTBIT_MSB;
-	SPI0.hspi.Init.TIMode = SPI_TIMODE_DISABLE;
-	SPI0.hspi.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-	SPI0.hspi.Init.CRCPolynomial = 10;
-	if (HAL_SPI_Init(&SPI0.hspi) != HAL_OK) {
-		Error_Handler();
-	}
-}
-
-void SPI0_deInit(void) {
-	if (HAL_SPI_DeInit(&SPI0.hspi) != HAL_OK) {
-		Error_Handler();
-	}
-}
-
 void SPI0_txRequest(uint8_t *data, uint16_t size, uint32_t timeout) {
-	HAL_SPI_Transmit(&SPI0.hspi, data, size, timeout);
+	GPIO_setLow(TMC_SPI_Channel[0].cs);
+	SPIX_txRequest(data, size, timeout);
+	GPIO_setHigh(TMC_SPI_Channel[0].cs);
 }
 
 void SPI0_rxRequest(uint8_t *data, uint16_t size, uint32_t timeout) {
-	HAL_SPI_Receive(&SPI0.hspi, data, size, timeout);
+	GPIO_setLow(TMC_SPI_Channel[0].cs);
+	SPIX_rxRequest(data, size, timeout);
+	GPIO_setHigh(TMC_SPI_Channel[0].cs);
 }
 
 void SPI0_txrx(uint8_t *data_tx, uint8_t *data_rx, uint16_t size, uint32_t timeout) {
-	HAL_SPI_TransmitReceive(&SPI0.hspi, data_tx, data_rx, size, timeout);
+	GPIO_setLow(TMC_SPI_Channel[0].cs);
+	SPIX_txrx(data_tx, data_rx, size, timeout);
+	GPIO_setHigh(TMC_SPI_Channel[0].cs);
+}
+
+void SPI1_txRequest(uint8_t *data, uint16_t size, uint32_t timeout) {
+	GPIO_setLow(TMC_SPI_Channel[1].cs);
+	SPIX_txRequest(data, size, timeout);
+	GPIO_setHigh(TMC_SPI_Channel[1].cs);
+}
+
+void SPI1_rxRequest(uint8_t *data, uint16_t size, uint32_t timeout) {
+	GPIO_setLow(TMC_SPI_Channel[1].cs);
+	SPIX_rxRequest(data, size, timeout);
+	GPIO_setHigh(TMC_SPI_Channel[1].cs);
+}
+
+void SPI1_txrx(uint8_t *data_tx, uint8_t *data_rx, uint16_t size, uint32_t timeout) {
+	GPIO_setLow(TMC_SPI_Channel[1].cs);
+	SPIX_txrx(data_tx, data_rx, size, timeout);
+	GPIO_setHigh(TMC_SPI_Channel[1].cs);
+}
+
+void SPI2_txRequest(uint8_t *data, uint16_t size, uint32_t timeout) {
+	GPIO_setLow(TMC_SPI_Channel[2].cs);
+	SPIX_txRequest(data, size, timeout);
+	GPIO_setHigh(TMC_SPI_Channel[2].cs);
+}
+
+void SPI2_rxRequest(uint8_t *data, uint16_t size, uint32_t timeout) {
+	GPIO_setLow(TMC_SPI_Channel[2].cs);
+	SPIX_rxRequest(data, size, timeout);
+	GPIO_setHigh(TMC_SPI_Channel[2].cs);
+}
+
+void SPI2_txrx(uint8_t *data_tx, uint8_t *data_rx, uint16_t size, uint32_t timeout) {
+	GPIO_setLow(TMC_SPI_Channel[2].cs);
+	SPIX_txrx(data_tx, data_rx, size, timeout);
+	GPIO_setHigh(TMC_SPI_Channel[2].cs);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Semi specific functions
+////////////////////////////////////////////////////////////////////////////////
+
+void SPIX_init(void) {
+	if(!initialized) {
+		/* SPI1 parameter configuration*/
+		hspi.Instance = SPI1;
+		hspi.Init.Mode = SPI_MODE_MASTER;
+		hspi.Init.Direction = SPI_DIRECTION_2LINES;
+		hspi.Init.DataSize = SPI_DATASIZE_8BIT;
+		hspi.Init.CLKPolarity = SPI_POLARITY_LOW;
+		hspi.Init.CLKPhase = SPI_PHASE_2EDGE;
+		hspi.Init.NSS = SPI_NSS_SOFT;
+		hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
+		hspi.Init.FirstBit = SPI_FIRSTBIT_MSB;
+		hspi.Init.TIMode = SPI_TIMODE_DISABLE;
+		hspi.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+		hspi.Init.CRCPolynomial = 10;
+		if (HAL_SPI_Init(&hspi) != HAL_OK) {
+			Error_Handler();
+		}
+		initialized = 1;
+	}
+}
+
+void SPIX_deInit(void) {
+	if(initialized) {
+		if (HAL_SPI_DeInit(&hspi) != HAL_OK) {
+			Error_Handler();
+		}
+		initialized = 0;
+	}
+}
+
+void SPIX_txRequest(uint8_t *data, uint16_t size, uint32_t timeout) {
+	if(initialized)
+		HAL_SPI_Transmit(&hspi, data, size, timeout);
+}
+
+void SPIX_rxRequest(uint8_t *data, uint16_t size, uint32_t timeout) {
+	if(initialized)
+		HAL_SPI_Receive(&hspi, data, size, timeout);
+}
+
+void SPIX_txrx(uint8_t *data_tx, uint8_t *data_rx, uint16_t size, uint32_t timeout) {
+	if(initialized)
+		HAL_SPI_TransmitReceive(&hspi, data_tx, data_rx, size, timeout);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Generic functions
 ////////////////////////////////////////////////////////////////////////////////
 
-void SPI_Init(TMC_SPI *SPI) {
+void SPI_init(TMC_SPI *SPI) {
 	SPI->con.init();
 }
 
@@ -82,15 +189,21 @@ void SPI_deInit(TMC_SPI *SPI) {
 }
 
 void SPI_txRequest(TMC_SPI *SPI, uint8_t *data, uint16_t size, uint32_t timeout) {
+	GPIO_setHigh(SPI->cs);
 	SPI->con.txRequest(data, size, timeout);
+	GPIO_setLow(SPI->cs);
 }
 
 void SPI_rxRequest(TMC_SPI *SPI, uint8_t *data, uint16_t size, uint32_t timeout) {
+	GPIO_setHigh(SPI->cs);
 	SPI->con.rxRequest(data, size, timeout);
+	GPIO_setLow(SPI->cs);
 }
 
 void SPI_txrx(TMC_SPI *SPI, uint8_t *data_tx, uint8_t *data_rx, uint16_t size, uint32_t timeout) {
+	GPIO_setHigh(SPI->cs);
 	SPI->con.txrx(data_tx, data_rx, size, timeout);
+	GPIO_setLow(SPI->cs);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

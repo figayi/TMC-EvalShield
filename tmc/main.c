@@ -26,14 +26,18 @@ int main(void) {
 
 	SystemClock_Config();
 
-	GPIO_Init();
+	GPIO_init();
 	UART0_Init();
-	SPI0_Init();
+	SPIX_init();
 	//USB_Init();
 
-	ConfigurationTypeDef config;
-	board.config = &config;
-	Board_init(&board);
+	ConfigurationTypeDef config[3];
+	board[0].config = &config[0];
+	board[1].config = &config[1];
+	board[2].config = &config[2];
+	Board_init(&board[0]);
+	Board_init(&board[1]);
+	Board_init(&board[2]);
 	tmcl_init();
 
 	while (1) {

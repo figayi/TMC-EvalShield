@@ -6,7 +6,6 @@
  */
 
 #include "USB.h"
-#include "Pins.h"
 
 TMC_USB USB0 = {
 	.con = {

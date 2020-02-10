@@ -6,7 +6,6 @@
  */
 
 #include "main.h"
-#include "Pins.h"
 
 /**
   * Initializes the Global MSP.

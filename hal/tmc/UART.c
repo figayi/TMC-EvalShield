@@ -6,7 +6,6 @@
  */
 
 #include "UART.h"
-#include "Pins.h"
 #include "RXTX.h"
 
 extern void Error_Handler(void);
@@ -168,7 +167,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart) {
 		 PA2     ------> USART2_TX
 		 PA3     ------> USART2_RX
 		 */
-		GPIO_InitStruct.Pin = USART_TX_Pin | USART_RX_Pin;
+		GPIO_InitStruct.Pin = GPIO_PIN_2 | GPIO_PIN_3;
 		GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 		HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -204,7 +203,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart) {
 		 PA2     ------> USART2_TX
 		 PA3     ------> USART2_RX
 		 */
-		HAL_GPIO_DeInit(GPIOA, USART_TX_Pin | USART_RX_Pin);
+		HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2 | GPIO_PIN_3);
 
 		/* USART2 DMA DeInit */
 		HAL_DMA_DeInit(huart->hdmarx);

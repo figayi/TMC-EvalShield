@@ -11,6 +11,8 @@
 #include "Definitions.h"
 #include "tmc/helpers/API_Header.h"
 
+#define TMC_AXES_COUNT 3
+
 #ifndef BOARD
 #define BOARD
 #define TMC5160_shield
@@ -72,7 +74,7 @@ typedef struct {
 	DriverState driverState;
 } TMC_Board;
 
-TMC_Board board;
+TMC_Board board[TMC_AXES_COUNT];
 
 void Board_init(TMC_Board *board);
 void board_setDummyFunctions(TMC_Board *board);
