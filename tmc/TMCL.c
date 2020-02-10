@@ -373,8 +373,7 @@ void tmcl_init()
 	interfaces[0]        = &UART0.con;
 	numberOfInterfaces   = 1;
 	for(size_t i = 0; i < numberOfInterfaces; i++) {
-		interfaces[i]->continuous = 1;
-		interfaces[i]->rxN(NULL, TMC_RXTX_BUFFER_SIZE, TMC_TMCL_TIMEOUT);
+		interfaces[i]->rxRequest(NULL, TMC_RXTX_BUFFER_SIZE, TMC_TMCL_TIMEOUT);
 	}
 }
 
@@ -435,7 +434,7 @@ void tx(TMC_Connection *con)
 
 	//HAL_UART_Transmit(&UART0.huart, reply, TMC_TMCL_DATAGRAM_LENGTH, TMC_TMCL_TIMEOUT);
 
-	con->txN(reply, TMC_TMCL_DATAGRAM_LENGTH, TMC_TMCL_TIMEOUT);
+	con->txRequest(reply, TMC_TMCL_DATAGRAM_LENGTH, TMC_TMCL_TIMEOUT);
 }
 
 void rx(TMC_Connection *con)
@@ -451,8 +450,7 @@ void rx(TMC_Connection *con)
 
 	// todo ADD CHECK 2: check for SERIAL_MODULE_ADDRESS byte ( cmd[0] ) ? (LH)
 
-	for(size_t i = 0; i < TMC_TMCL_DATAGRAM_LENGTH; i++)
-		cmd[i] = con->rx();
+	con->rxN(&cmd[0], TMC_TMCL_DATAGRAM_LENGTH);
 
 	for(int i = 0; i < 8; i++)
 		checkSum += cmd[i];

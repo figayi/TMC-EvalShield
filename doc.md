@@ -10,8 +10,9 @@ TODO
 ### TMC Connection interface
 Modules using the *TMC Connection* interface (`TMC_Connection`) can be used for communication in a more abstract and collective manner.  
 This interface is generally stored in communication modules structs as `struct.con`.  
-After initialization, `con.rxN(...)` and `con.txN(...)` can be used for communication, so the application does not have to
-hassle with multiple interfaces, each with its own communication functions.  
+All general purpose communication functions available via `con.<function>(...)` are mapped to module specific functions `<module>_<function>`.
+After initialization, `con.rxRequest(...)`, `con.txRequest(...)`, `con.rxN(...)` and `con.txN(...)`
+can be used for communication, so the application does not have to hassle with multiple interfaces, each with its own communication functions.  
 In asynchronous connections, `con.dataAvailable(...)` can be used to poll the amount of data available to read since last buffer reset.
 
 #### Limitations / Pitfalls
@@ -21,26 +22,35 @@ With typical UART baudrates (< 1000000 baud) this limit will likely never be rea
 
 ### UART
 Regular UART communication is made via the *U(S)ART3* module.  
-UART utilizes the TMC Connection interface. Core communication functions are:
-```C
-void UART_rxN(TMC_UART *interface, uint8_t *data, uint16_t size, uint32_t timeout);
-void UART_txN(TMC_UART *interface, uint8_t *data, uint16_t size, uint32_t timeout);
-```
-Both functions are used to receive/transmit a portion of data (starting at `&data[0]`) of size `size`.  
-When `data == NULL` (recommended), internal RXTX buffers will be used, with all its benefits (`dataAvailable` polling etc.).
-Otherwise, the *DMA* directly writes to the given array, and the user has to manually manage the buffer.  
 Receiving is made *asynchronous* with *DMA* while transmitting is *synchronous*.  
+UART utilizes the TMC Connection interface. Core communication functions are:
+
+```C
+void UART_rxRequest(TMC_UART *interface, uint8_t *data, uint16_t size, uint32_t timeout);
+void UART_rxN(TMC_UART *interface, uint8_t *data, size_t size);
+void UART_txRequest(TMC_UART *interface, uint8_t *data, uint16_t size, uint32_t timeout);
+```
+
+`UART_rxRequest(...)` is used to request receiving data. If `data == NULL` (recommended),
+internal RXTX buffers will be used, with all its benefits (`dataAvailable` polling etc.).
+Otherwise, the *DMA* directly writes to the given array, and the user has to manually manage the buffer.  
+When using internal buffers, `UART_rxN(...)` can be used to read out a portion of data from the buffer, if available.  
+Since transmitting is synchronous, `UART_txRequest(...)` will directly send the given data without buffering.
 These functions can only be called after initialization of the TMC_UART interface.
 
 ### SPI
 SPI communication is made via the *SPI1* module.  
-SPI utilizes the TMC Connection interface. Core communication functions are:
-```C
-void SPI_rxN(TMC_SPI *interface, uint8_t *data, uint16_t size, uint32_t timeout);
-void SPI_txN(TMC_SPI *interface, uint8_t *data, uint16_t size, uint32_t timeout);
-```
-Both functions are used to receive/transmit a portion of data (starting at `&data[0]`) of size `size`.  
 Receiving and transmitting are both *synchronous*.  
+SPI utilizes the TMC Connection interface. Core communication functions are:
+
+```C
+void SPI_rxRequest(TMC_SPI *interface, uint8_t *data, uint16_t size, uint32_t timeout);
+void SPI_txRequest(TMC_SPI *interface, uint8_t *data, uint16_t size, uint32_t timeout);
+```
+
+Both functions are used to receive/transmit a portion of data (starting at `&data[0]`) of size `size`.  
+Since transmitting and receiving are both synchronous, `SPI_rxRequest(...)` and `SPI_txRequest(...)` will directly
+read/write the given data without buffering.
 These functions can only be called after initialization of the TMC_SPI interface.
 
 ### USB

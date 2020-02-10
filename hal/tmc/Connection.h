@@ -18,8 +18,10 @@ typedef enum {
 typedef struct {
 	void (*init)(void);
 	void (*deInit)(void);
-	void (*txN)(uint8_t *data, uint16_t size, uint32_t timeout);
-	void (*rxN)(uint8_t *data, uint16_t size, uint32_t timeout);
+	void (*txRequest)(uint8_t *data, uint16_t size, uint32_t timeout);
+	void (*rxRequest)(uint8_t *data, uint16_t size, uint32_t timeout);
+	void (*txN)(size_t size);
+	void (*rxN)(uint8_t *data, size_t size);
 	uint8_t (*rx)(void);
 	size_t (*dataAvailable)(void);
 	void (*resetBuffers)(void);
