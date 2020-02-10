@@ -44,7 +44,7 @@ void UART0_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   UART0.huart.Instance = USART2;
-  UART0.huart.Init.BaudRate = 9600;
+  UART0.huart.Init.BaudRate = 115200;
   UART0.huart.Init.WordLength = UART_WORDLENGTH_8B;
   UART0.huart.Init.StopBits = UART_STOPBITS_1;
   UART0.huart.Init.Parity = UART_PARITY_NONE;
