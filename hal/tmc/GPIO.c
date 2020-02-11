@@ -26,8 +26,8 @@ TMC_Pin pins[TMC_PIN_COUNT] = {
 		.init = {
 			.Pin = GPIO_PIN_6,
 			.Mode = GPIO_MODE_OUTPUT_PP,
-			.Pull = GPIO_PULLUP,
-			.Speed = GPIO_SPEED_FREQ_LOW
+			.Pull = GPIO_NOPULL,
+			.Speed = GPIO_SPEED_FREQ_HIGH
 		},
 		.isGPIO = 1,
 		.resetState = GPIO_PIN_SET
@@ -62,8 +62,10 @@ TMC_Pin pins[TMC_PIN_COUNT] = {
 
 void GPIO_initPin(TMC_Pin *pin)
 {
+	// Configure output level
 	HAL_GPIO_Init(pin->port, &pin->init);
-	HAL_GPIO_WritePin(pin->port, pin->pin, pin->resetState);
+	if(pin->isGPIO)
+		HAL_GPIO_WritePin(pin->port, pin->pin, pin->resetState);
 }
 
 TMC_Pin *GPIO_getPin(GPIO_TypeDef *port, uint32_t number)
@@ -104,7 +106,13 @@ void GPIO_setFloating(TMC_Pin *pin)
 }
 
 void GPIO_init(void) {
+	__HAL_RCC_GPIOC_CLK_ENABLE();
+	__HAL_RCC_GPIOD_CLK_ENABLE();
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOB_CLK_ENABLE();
 
+	for(size_t i = 0; i < TMC_PIN_COUNT; i++)
+		GPIO_initPin(&pins[i]);
 }
 
 /**

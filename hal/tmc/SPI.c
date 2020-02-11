@@ -86,8 +86,14 @@ void SPI0_rxRequest(uint8_t *data, uint16_t size, uint32_t timeout) {
 
 void SPI0_txrx(uint8_t *data_tx, uint8_t *data_rx, uint16_t size, uint32_t timeout) {
 	GPIO_setLow(TMC_SPI_Channel[0].cs);
+	//GPIO_setLow(TMC_SPI_Channel[1].cs);
+	//GPIO_setLow(TMC_SPI_Channel[2].cs);
+	//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
 	SPIX_txrx(data_tx, data_rx, size, timeout);
 	GPIO_setHigh(TMC_SPI_Channel[0].cs);
+	//GPIO_setHigh(TMC_SPI_Channel[1].cs);
+	//GPIO_setHigh(TMC_SPI_Channel[2].cs);
+	//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
 }
 
 void SPI1_txRequest(uint8_t *data, uint16_t size, uint32_t timeout) {
@@ -137,14 +143,14 @@ void SPIX_init(void) {
 		hspi.Init.Mode = SPI_MODE_MASTER;
 		hspi.Init.Direction = SPI_DIRECTION_2LINES;
 		hspi.Init.DataSize = SPI_DATASIZE_8BIT;
-		hspi.Init.CLKPolarity = SPI_POLARITY_LOW;
+		hspi.Init.CLKPolarity = SPI_POLARITY_HIGH;
 		hspi.Init.CLKPhase = SPI_PHASE_2EDGE;
 		hspi.Init.NSS = SPI_NSS_SOFT;
 		hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
 		hspi.Init.FirstBit = SPI_FIRSTBIT_MSB;
 		hspi.Init.TIMode = SPI_TIMODE_DISABLE;
-		hspi.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-		hspi.Init.CRCPolynomial = 10;
+		hspi.Init.CRCCalculation = SPI_CRCCALCULATION_ENABLE;
+		hspi.Init.CRCPolynomial = 0;
 		if (HAL_SPI_Init(&hspi) != HAL_OK) {
 			Error_Handler();
 		}
@@ -173,7 +179,8 @@ void SPIX_rxRequest(uint8_t *data, uint16_t size, uint32_t timeout) {
 
 void SPIX_txrx(uint8_t *data_tx, uint8_t *data_rx, uint16_t size, uint32_t timeout) {
 	if(initialized)
-		HAL_SPI_TransmitReceive(&hspi, data_tx, data_rx, size, timeout);
+		if(HAL_SPI_TransmitReceive(&hspi, data_tx, data_rx, size, timeout) != HAL_OK)
+			Error_Handler();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

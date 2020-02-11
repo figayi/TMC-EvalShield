@@ -60,6 +60,7 @@ void tmc5160_writeDatagram(uint8_t motor, uint8_t address, uint8_t x1, uint8_t x
 	address = TMC_ADDRESS(address);
 	uint8_t data[5] = { address|0x80, x1, x2, x3, x4 };
 	TMC_SPI_Channel[motor].con.txRequest(&data[0], 5, TIMEOUT);
+	board[motor].config->shadowRegister[address] = _8_32(x1, x2, x3, x4);
 }
 
 void tmc5160_writeInt(uint8_t motor, uint8_t address, int value)
@@ -85,7 +86,7 @@ int tmc5160_readInt(uint8_t motor, uint8_t address)
 	uint8_t data_rx[5] = { 0, 0, 0, 0, 0 };
 	TMC_SPI_Channel[motor].con.txrx(&data_tx[0], &data_rx[0], 5, TIMEOUT);
 
-	return _8_32(data_rx[0], data_rx[1], data_rx[2], data_rx[3]);
+	return _8_32(data_rx[1], data_rx[2], data_rx[3], data_rx[4]);
 }
 
 static uint32_t rotate(uint8_t motor, int32_t velocity)
@@ -745,7 +746,7 @@ static void periodicJob(uint32_t tick)
 {
 	for(int motor = 0; motor < TMC_AXES_COUNT; motor++)
 	{
-		tmc5160_periodicJob(motor, tick, &TMC5160, board[motor].config);
+		tmc5160_periodicJob(motor, tick, &TMC5160[motor], board[motor].config);
 	}
 }
 
@@ -805,6 +806,9 @@ static void enableDriver(DriverState state)
 
 void TMC5160_init(TMC_Board *board, uint8_t axis)
 {
+	for(size_t i = 0; i < TMC5160_REGISTER_COUNT; i++)
+		board->config->shadowRegister[i] = 0;
+
 	tmc5160_initConfig(&TMC5160[axis]);
 
 	board->config->reset = reset;

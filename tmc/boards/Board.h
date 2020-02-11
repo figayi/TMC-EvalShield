@@ -12,6 +12,7 @@
 #include "tmc/helpers/API_Header.h"
 
 #define TMC_AXES_COUNT 3
+#define TMC_BOARD_COUNT TMC_AXES_COUNT
 
 #ifndef BOARD
 #define BOARD
@@ -76,7 +77,7 @@ typedef struct {
 
 TMC_Board board[TMC_AXES_COUNT];
 
-void Board_init(TMC_Board *board);
-void board_setDummyFunctions(TMC_Board *board);
+void Board_init(TMC_Board *board, uint8_t axis);
+void board_setDummyFunctions(TMC_Board *board, uint8_t axis);
 
 #endif /* TMC_BOARDS_BOARD_H_ */

@@ -51,8 +51,7 @@ void UART0_Init(void) {
 
 static void UART0_DMA_Init(void) {
 	/* DMA controller clock enable */
-	__HAL_RCC_DMA1_CLK_ENABLE()
-	;
+	__HAL_RCC_DMA1_CLK_ENABLE();
 
 	/* DMA interrupt init */
 	/* DMA1_Channel6_IRQn interrupt configuration */
@@ -75,6 +74,8 @@ void UART0_txRequest(uint8_t *data, uint16_t size, uint32_t timeout) {
 void UART0_rxRequest(uint8_t *data, uint16_t size, uint32_t timeout) {
 	UNUSED(timeout);
 	UART0.con.word = size;
+	UART0.cndtr = size;
+	//UART0.extra = (uint8_t*)malloc(size);
 	if (HAL_UART_Receive_DMA(&UART0.huart, data ? data : (&UART0.buffer_rx.buffer[0]), data ? size : TMC_RXTX_BUFFER_SIZE) == HAL_OK)
 		UART0.con.status = TMC_CONNECTION_STATUS_BUSY;
 	else
@@ -95,19 +96,17 @@ uint8_t UART0_rx(void) {
 }
 
 size_t UART0_dataAvailable(void) {
-	size_t delta = 0;
 	uint32_t cndtr = UART0.hdma_rx.Instance->CNDTR;
-	if (UART0.cndtr >= cndtr)
-		delta = UART0.cndtr - cndtr;
+	if(cndtr <= UART0.cndtr)
+		TMC_RXTX_incrementBuffer(&UART0.buffer_rx, UART0.cndtr - cndtr);
 	else
-		delta = TMC_RXTX_BUFFER_SIZE - (cndtr - UART0.cndtr);
-	UART0.buffer_rx.target = (UART0.buffer_rx.target + delta)
-			% TMC_RXTX_BUFFER_SIZE;
+		TMC_RXTX_incrementBuffer(&UART0.buffer_rx, TMC_RXTX_BUFFER_SIZE + UART0.cndtr - cndtr);
 	UART0.cndtr = cndtr;
 	return TMC_RXTX_dataAvailable(&UART0.buffer_rx);
 }
 
 void UART0_resetBuffers(void) {
+	HAL_UART_AbortReceive(&UART0.huart);
 	TMC_RXTX_resetBuffer(&UART0.buffer_rx);
 }
 
@@ -158,11 +157,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart) {
 
 		/* USER CODE END USART2_MspInit 0 */
 		/* Peripheral clock enable */
-		__HAL_RCC_USART2_CLK_ENABLE()
-		;
+		__HAL_RCC_USART2_CLK_ENABLE();
 
-		__HAL_RCC_GPIOA_CLK_ENABLE()
-		;
+		__HAL_RCC_GPIOA_CLK_ENABLE();
 		/**USART2 GPIO Configuration
 		 PA2     ------> USART2_TX
 		 PA3     ------> USART2_RX
@@ -212,3 +209,9 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart) {
 		/* USER CODE END USART2_MspDeInit 1 */
 	}
 }
+
+//void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) {
+//	if(huart == &UART0.huart) {
+//		HAL_UART_DMAPause(huart);
+//	}
+//}

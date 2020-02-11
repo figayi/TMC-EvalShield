@@ -7,17 +7,17 @@
 
 #include "Board.h"
 
-extern void TMC5160_init(TMC_Board *board);
+extern void TMC5160_init(TMC_Board *board, uint8_t axis);
 
-void Board_init(TMC_Board *board)
+void Board_init(TMC_Board *board, uint8_t axis)
 {
 #ifdef BOARD
 #ifdef TMC5160_shield
-	TMC5160_init(board);
-	//board_setDummyFunctions(board);
+	TMC5160_init(board, axis);
+	//board_setDummyFunctions(board, axis);
 #endif
 #else
-	board_setDummyFunctions(board);
+	board_setDummyFunctions(board, axis);
 #endif
 }
 
@@ -97,7 +97,7 @@ static void periodicJob(uint32_t tick)
 	UNUSED(tick);
 }
 
-void board_setDummyFunctions(TMC_Board *board)
+void board_setDummyFunctions(TMC_Board *board, uint8_t axis)
 {
 	board->config->reset     = delegationReturn;
 	board->config->restore   = delegationReturn;

@@ -11,13 +11,14 @@
 #include "Definitions.h"
 
 #ifndef TMC_RXTX_BUFFER_SIZE
-#define TMC_RXTX_BUFFER_SIZE 50
+#define TMC_RXTX_BUFFER_SIZE 90
 #endif
 
 typedef struct {
 	uint8_t buffer[TMC_RXTX_BUFFER_SIZE];
 	size_t pos;
 	size_t target;
+	size_t overflow;
 } TMC_RXTX_Buffer;
 
 void TMC_RXTX_incrementBuffer(TMC_RXTX_Buffer *buffer, size_t length);

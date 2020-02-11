@@ -373,6 +373,7 @@ void tmcl_init()
 	interfaces[0]        = &UART0.con;
 	numberOfInterfaces   = 1;
 	for(size_t i = 0; i < numberOfInterfaces; i++) {
+		interfaces[i]->resetBuffers();
 		interfaces[i]->rxRequest(NULL, TMC_RXTX_BUFFER_SIZE, TMC_TMCL_TIMEOUT);
 	}
 }
@@ -396,6 +397,7 @@ void tmcl_process()
 			rx(interfaces[i]);
 		}
 		//interfaces[i]->resetBuffers();
+		//interfaces[i]->rxRequest(NULL, TMC_RXTX_BUFFER_SIZE, TMC_TMCL_TIMEOUT);
 	}
 }
 
