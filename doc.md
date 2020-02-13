@@ -7,12 +7,18 @@
 TMC-EvalShield is designed to support up to 3 evalboards simultaniously. They can be accessed via the
 3 integrated SPI channels.  
 EvalBoards must be selected during compile time due to the lack of dynamic ID detection. To do so,
-one can change definitions in `boards/Board.h` like that:
+the user can change definitions in the marked area in `boards/Board.h` like that:
 
 ```C
-#define TMC_AXES_COUNT <number of axes>
-#define 
+#define TMC_AXES_COUNT   <number of axes>
+#define TMC_BOARD_COUNT  <number of boards>
+#define BOARD_0          <ID of board in channel 0>
+#define BOARD_1          <ID of board in channel 1>
+#define BOARD_2          <ID of board in channel 2>
 ```
+
+Normally you would have `TMC_AXES_COUNT == TMC_BOARD_COUNT`, except in case of individual boards with multiple axes.  
+These definitions are guarded and can be set as compiler flag aswell. In that case, dont forget to define `TMC_CFLAGS`.
 
 ## Hardware Abstraction Layer (HAL)
 The HAL is based on STM32Cube HAL with peripheral drivers.  
