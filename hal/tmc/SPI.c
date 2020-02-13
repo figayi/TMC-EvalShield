@@ -30,7 +30,7 @@ TMC_SPI TMC_SPI_Channel[TMC_SPI_CHANNELS] = {
 			.status = TMC_CONNECTION_STATUS_READY
 		},
 		.hspi = &hspi,
-		.cs = &pins[1]
+		.cs = &ios[1]
 	},
 	{
 		.con = {
@@ -47,7 +47,7 @@ TMC_SPI TMC_SPI_Channel[TMC_SPI_CHANNELS] = {
 			.status = TMC_CONNECTION_STATUS_READY
 		},
 		.hspi = &hspi,
-		.cs = &pins[2]
+		.cs = &ios[2]
 	},
 	{
 		.con = {
@@ -64,7 +64,7 @@ TMC_SPI TMC_SPI_Channel[TMC_SPI_CHANNELS] = {
 			.status = TMC_CONNECTION_STATUS_READY
 		},
 		.hspi = &hspi,
-		.cs = &pins[3]
+		.cs = &ios[3]
 	}
 };
 

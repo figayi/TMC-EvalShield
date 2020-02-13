@@ -7,10 +7,10 @@
 
 #include "GPIO.h"
 
-TMC_Pin pins[TMC_PIN_COUNT] = {
+TMC_IO ios[TMC_IO_COUNT] = {
 	// Blue button interrupt
 	{
-		.pin = GPIO_PIN_13,
+		.pin = 2,
 		.port = GPIOC,
 		.init = {
 			.Pin = GPIO_PIN_13,
@@ -21,7 +21,7 @@ TMC_Pin pins[TMC_PIN_COUNT] = {
 	},
 	// SPI0 Chip Select
 	{
-		.pin = GPIO_PIN_6,
+		.pin = 58,
 		.port = GPIOB,
 		.init = {
 			.Pin = GPIO_PIN_6,
@@ -34,7 +34,7 @@ TMC_Pin pins[TMC_PIN_COUNT] = {
 	},
 	// SPI1 Chip Select
 	{
-		.pin = GPIO_PIN_7,
+		.pin = 38,
 		.port = GPIOC,
 		.init = {
 			.Pin = GPIO_PIN_7,
@@ -47,7 +47,7 @@ TMC_Pin pins[TMC_PIN_COUNT] = {
 	},
 	// SPI2 Chip Select
 	{
-		.pin = GPIO_PIN_9,
+		.pin = 42,
 		.port = GPIOA,
 		.init = {
 			.Pin = GPIO_PIN_9,
@@ -60,47 +60,47 @@ TMC_Pin pins[TMC_PIN_COUNT] = {
 	}
 };
 
-void GPIO_initPin(TMC_Pin *pin)
+void GPIO_initIO(TMC_IO *io)
 {
 	// Configure output level
-	HAL_GPIO_Init(pin->port, &pin->init);
-	if(pin->isGPIO)
-		HAL_GPIO_WritePin(pin->port, pin->pin, pin->resetState);
+	HAL_GPIO_Init(io->port, &io->init);
+	if(io->isGPIO)
+		HAL_GPIO_WritePin(io->port, io->init.Pin, io->resetState);
 }
 
-TMC_Pin *GPIO_getPin(GPIO_TypeDef *port, uint32_t number)
+TMC_IO *GPIO_getIO(uint8_t number)
 {
-	for(size_t i = 0; i < TMC_PIN_COUNT; i++)
-		if((pins[i].port == port) && (pins[i].pin == number))
-			return &pins[i];
+	for(size_t i = 0; i < TMC_IO_COUNT; i++)
+		if(ios[i].pin == number)
+			return &ios[i];
 	return NULL;
 }
 
-void GPIO_setToInput(TMC_Pin *pin)
+void GPIO_setToInput(TMC_IO *io)
 {
-	GPIO_InitTypeDef init = pin->init;
+	GPIO_InitTypeDef init = io->init;
 	init.Mode = GPIO_MODE_INPUT;
-	HAL_GPIO_Init(pin->port, &init);
+	HAL_GPIO_Init(io->port, &init);
 }
 
-void GPIO_setToOutput(TMC_Pin *pin)
+void GPIO_setToOutput(TMC_IO *io)
 {
-	GPIO_InitTypeDef init = pin->init;
+	GPIO_InitTypeDef init = io->init;
 	init.Mode = GPIO_MODE_OUTPUT_PP;
-	HAL_GPIO_Init(pin->port, &init);
+	HAL_GPIO_Init(io->port, &init);
 }
 
-void GPIO_setHigh(TMC_Pin *pin)
+void GPIO_setHigh(TMC_IO *io)
 {
-	HAL_GPIO_WritePin(pin->port, pin->pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(io->port, io->pin, GPIO_PIN_SET);
 }
 
-void GPIO_setLow(TMC_Pin *pin)
+void GPIO_setLow(TMC_IO *io)
 {
-	HAL_GPIO_WritePin(pin->port, pin->pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(io->port, io->init.Pin, GPIO_PIN_RESET);
 }
 
-void GPIO_setFloating(TMC_Pin *pin)
+void GPIO_setFloating(TMC_IO *io)
 {
 	// TODO
 }
@@ -111,8 +111,8 @@ void GPIO_init(void) {
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 
-	for(size_t i = 0; i < TMC_PIN_COUNT; i++)
-		GPIO_initPin(&pins[i]);
+	for(size_t i = 0; i < TMC_IO_COUNT; i++)
+		GPIO_initIO(&ios[i]);
 }
 
 /**

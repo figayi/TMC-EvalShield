@@ -17,7 +17,7 @@
 typedef struct {
 	TMC_Connection con;
 	SPI_HandleTypeDef *hspi;
-	TMC_Pin *cs;
+	TMC_IO *cs;
 } TMC_SPI;
 
 TMC_SPI TMC_SPI_Channel[TMC_SPI_CHANNELS];

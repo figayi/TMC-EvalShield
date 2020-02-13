@@ -2,23 +2,23 @@
 
 ## GPIO manipulation
 
-GPIOs are managed with the `TMC_Pin` interface.
+GPIOs are managed with the `TMC_IO` interface.
 
 ```C
 #include "HAL.h"
 #include "GPIO.h"
 GPIO_init();
 // All GPIOs are initialized with their static configuration.
-TMC_Pin *pin = GPIO_getPin(14);
+TMC_IO *io = GPIO_getPin(14);
 // Get IO for MCU pin number 14, which is PA0 for STM32F103.
-GPIO_setHigh(pin);
-// Pin is now at high level.
+GPIO_setHigh(io);
+// IO is now at high level.
 HAL_Delay(1000);
-GPIO_setLow(pin);
-// Pin is now at low level.
+GPIO_setLow(io);
+// IO is now at low level.
 HAL_Delay(1000);
-GPIO_setFloating(pin);
-// Pin is now disconnected (high Z).
+GPIO_setFloating(io);
+// IO is now disconnected (high Z).
 ```
 
 ## UART RX (functional access)

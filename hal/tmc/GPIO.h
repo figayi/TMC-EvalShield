@@ -11,28 +11,28 @@
 #include "Definitions.h"
 #include "stm32f1xx_hal.h"
 
-#define TMC_PIN_COUNT 4
+#define TMC_IO_COUNT 4
 
 typedef struct {
-	uint32_t pin;
+	uint8_t pin;
 	GPIO_TypeDef *port;
 	GPIO_InitTypeDef init;
 
 	uint8_t isGPIO;
 	GPIO_PinState resetState;
-} TMC_Pin;
+} TMC_IO;
 
-TMC_Pin pins[TMC_PIN_COUNT];
+TMC_IO ios[TMC_IO_COUNT];
 
 void GPIO_init(void);
-void GPIO_initPin(TMC_Pin *pin);
+void GPIO_initIO(TMC_IO *io);
 
-TMC_Pin *GPIO_getPin(GPIO_TypeDef *port, uint32_t number);
+TMC_IO *GPIO_getIO(uint8_t number);
 
-void GPIO_setToInput(TMC_Pin *pin);
-void GPIO_setToOutput(TMC_Pin *pin);
-void GPIO_setHigh(TMC_Pin *pin);
-void GPIO_setLow(TMC_Pin *pin);
-void GPIO_setFloating(TMC_Pin *pin);
+void GPIO_setToInput(TMC_IO *io);
+void GPIO_setToOutput(TMC_IO *io);
+void GPIO_setHigh(TMC_IO *io);
+void GPIO_setLow(TMC_IO *io);
+void GPIO_setFloating(TMC_IO *io);
 
 #endif /* HAL_TMC_GPIO_H_ */

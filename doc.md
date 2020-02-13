@@ -5,20 +5,20 @@ The HAL is based on STM32Cube HAL with peripheral drivers.
 Additionally, there are TMC wrappers around this, which furthermore simplifies usage.  
 
 ### GPIO
-GPIOs are managed with the `TMC_Pin` interface. It holds the initial configuration amongst other state information.  
+GPIOs are managed with the `TMC_IO` interface. It holds the initial configuration amongst other state information.  
 GPIO's static initial configuration is set up in *GPIO.c*.  
 After initialization via `GPIO_init(...)`, the initial GPIO configuration is set and the IOs can be accessed via the following functions:  
 
 ```C
-TMC_Pin *GPIO_getPin(uint8_t number);
-void GPIO_setToInput(TMC_Pin *pin);
-void GPIO_setToOutput(TMC_Pin *pin);
-void GPIO_setHigh(TMC_Pin *pin);
-void GPIO_setLow(TMC_Pin *pin);
-void GPIO_setFloating(TMC_Pin *pin);
+TMC_IO *GPIO_getPin(uint8_t number);
+void GPIO_setToInput(TMC_IO *io);
+void GPIO_setToOutput(TMC_IO *io);
+void GPIO_setHigh(TMC_IO *io);
+void GPIO_setLow(TMC_IO *io);
+void GPIO_setFloating(TMC_IO *io);
 ```
 
-Using `GPIO_getPin(...)` the IO for a given MCU pin number can be obtained comfortably.
+Using `GPIO_getIO(...)` the IO for a given MCU pin number can be obtained comfortably.
 If there is no IO for that pin number (i.e. not connected), it returns `NULL`.  
 The other manipulating functions should be self explainatory.
 
