@@ -58,6 +58,7 @@ void tmc5160_writeDatagram(uint8_t motor, uint8_t address, uint8_t x1, uint8_t x
 		return;
 
 	address = TMC_ADDRESS(address);
+
 	uint8_t data[5] = { address|0x80, x1, x2, x3, x4 };
 	TMC_SPI_Channel[motor].con.txRequest(&data[0], 5, TIMEOUT);
 	board[motor].config->shadowRegister[address] = _8_32(x1, x2, x3, x4);
@@ -84,6 +85,7 @@ int tmc5160_readInt(uint8_t motor, uint8_t address)
 
 	uint8_t data_tx[5] = { address, 0, 0, 0, 0 };
 	uint8_t data_rx[5] = { 0, 0, 0, 0, 0 };
+	TMC_SPI_Channel[motor].con.txRequest(&data_tx[0], 5, TIMEOUT);
 	TMC_SPI_Channel[motor].con.txrx(&data_tx[0], &data_rx[0], 5, TIMEOUT);
 
 	return _8_32(data_rx[1], data_rx[2], data_rx[3], data_rx[4]);

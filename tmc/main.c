@@ -46,8 +46,9 @@ int main(void) {
 //	    state = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6);
 //	    HAL_Delay(10);
 //	    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
+		board[0].periodicJob(HAL_GetTick());
 		tmcl_process();
-		HAL_Delay(10);
+		HAL_Delay(1);
 	}
 }
 
