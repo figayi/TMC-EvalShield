@@ -108,7 +108,7 @@ TMC_SPI_Channel[0].con.rxRequest(&data_rx[0], 4, 1000);
 
 ## SPI read / write with multiple interfaces
 
-Interfaces can be operated as a batch using the TMC_Connection interface.
+Interfaces can be operated as a batch using the `TMC_Connection` interface.
 
 ```C
 #include "SPI.h"
