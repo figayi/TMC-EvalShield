@@ -1,5 +1,26 @@
 # Operational guide
 
+## GPIO manipulation
+
+GPIOs are managed with the `TMC_Pin` interface.
+
+```C
+#include "HAL.h"
+#include "GPIO.h"
+GPIO_init();
+// All GPIOs are initialized with their static configuration.
+TMC_Pin *pin = GPIO_getPin(14);
+// Get IO for MCU pin number 14, which is PA0 for STM32F103.
+GPIO_setHigh(pin);
+// Pin is now at high level.
+HAL_Delay(1000);
+GPIO_setLow(pin);
+// Pin is now at low level.
+HAL_Delay(1000);
+GPIO_setFloating(pin);
+// Pin is now disconnected (high Z).
+```
+
 ## UART RX (functional access)
 
 ```C
@@ -42,5 +63,59 @@ UART1_init();
 UART2_init();
 TMC_Connection *interfaces[3] = { &UART0.con, &UART1.con, &UART2.con };
 for(size_t i = 0; i < 3; i++)
-	// Do stuff with interfaces
+  // Do stuff with interfaces
+```
+
+## SPI read / write (functional access)
+
+SPI is synchronous and therefore rx/tx operations are blocking and executed directly.  
+
+```C
+// TMC_SPI interfaces are already declared in the TMC_SPI_Channel[] array.
+#include "SPI.h"
+SPI_init(&TMC_SPI_Channel[0]);
+// Using SPI channel 0.
+// Creating buffer arrays.
+uint8_t data_tx[4] = { 0xDE, 0xAD, 0xBE, 0xEF };
+uint8_t data_rx[4] = { 0x00, 0x00, 0x00, 0x00 };
+// Transmitting 4 bytes without direct read-back on interface SPI channel 0 with a timeout of 1 second.
+SPI_txRequest(&TMC_SPI_Channel[0], &data_rx[0], 4, 1000);
+// Transmitting 4 bytes with simultanious read-back on interface SPI channel 0 with a timeout of 1 second.
+SPI_txrx(&TMC_SPI_Channel[0], &data_tx[0], &data_rx[0], 4, 1000);
+// Requesting RX for 10 bytes on interface SPI channel 0 using internal buffers and a timeout of 1 second.
+SPI_rxRequest(&TMC_SPI_Channel[0], &data_rx[0], 4, 1000);
+```
+
+## SPI read / write (structural access via TMC_Connection)
+
+SPI is synchronous and therefore rx/tx operations are blocking and executed directly.  
+
+```C
+// TMC_SPI interfaces are already declared in the TMC_SPI_Channel[] array.
+#include "SPI.h"
+SPI_init(&TMC_SPI_Channel[0]);
+// Using SPI channel 0.
+// Creating buffer arrays.
+uint8_t data_tx[4] = { 0xDE, 0xAD, 0xBE, 0xEF };
+uint8_t data_rx[4] = { 0x00, 0x00, 0x00, 0x00 };
+// Transmitting 4 bytes without direct read-back on interface SPI channel 0 with a timeout of 1 second.
+TMC_SPI_Channel[0].con.txRequest(&data_rx[0], 4, 1000);
+// Transmitting 4 bytes with simultanious read-back on interface SPI channel 0 with a timeout of 1 second.
+TMC_SPI_Channel[0].con.txrx(&data_tx[0], &data_rx[0], 4, 1000);
+// Requesting RX for 10 bytes on interface SPI channel 0 using internal buffers and a timeout of 1 second.
+TMC_SPI_Channel[0].con.rxRequest(&data_rx[0], 4, 1000);
+```
+
+## SPI read / write with multiple interfaces
+
+Interfaces can be operated as a batch using the TMC_Connection interface.
+
+```C
+#include "SPI.h"
+SPI_init(&TMC_SPI_Channel[0]);
+SPI_init(&TMC_SPI_Channel[1]);
+SPI_init(&TMC_SPI_Channel[2]);
+TMC_Connection *interfaces[3] = { &TMC_SPI_Channel[0].con, &TMC_SPI_Channel[1].con, &TMC_SPI_Channel[2].con };
+for(size_t i = 0; i < 3; i++)
+  // Do stuff with interfaces
 ```

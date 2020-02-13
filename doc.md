@@ -5,7 +5,22 @@ The HAL is based on STM32Cube HAL with peripheral drivers.
 Additionally, there are TMC wrappers around this, which furthermore simplifies usage.  
 
 ### GPIO
-TODO
+GPIOs are managed with the `TMC_Pin` interface. It holds the initial configuration amongst other state information.  
+GPIO's static initial configuration is set up in *GPIO.c*.  
+After initialization via `GPIO_init(...)`, the initial GPIO configuration is set and the IOs can be accessed via the following functions:  
+
+```C
+TMC_Pin *GPIO_getPin(uint8_t number);
+void GPIO_setToInput(TMC_Pin *pin);
+void GPIO_setToOutput(TMC_Pin *pin);
+void GPIO_setHigh(TMC_Pin *pin);
+void GPIO_setLow(TMC_Pin *pin);
+void GPIO_setFloating(TMC_Pin *pin);
+```
+
+Using `GPIO_getPin(...)` the IO for a given MCU pin number can be obtained comfortably.
+If there is no IO for that pin number (i.e. not connected), it returns `NULL`.  
+The other manipulating functions should be self explainatory.
 
 ### TMC Connection interface
 Modules using the *TMC Connection* interface (`TMC_Connection`) can be used for communication in a more abstract and collective manner.  
@@ -51,7 +66,8 @@ void SPI_txRequest(TMC_SPI *interface, uint8_t *data, uint16_t size, uint32_t ti
 Both functions are used to receive/transmit a portion of data (starting at `&data[0]`) of size `size`.  
 Since transmitting and receiving are both synchronous, `SPI_rxRequest(...)` and `SPI_txRequest(...)` will directly
 read/write the given data without buffering.
-These functions can only be called after initialization of the TMC_SPI interface.
+These functions can only be called after initialization of the TMC_SPI interface.  
+Currently, there are 3 SPI interfaces, globally accessible with *TMC\_SPI\_Channel[]* array.
 
 ### USB
 The USB connection is made via the *U(S)ART2* module. It is connected to the onboard ST-LINK,
