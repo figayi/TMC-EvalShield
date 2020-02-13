@@ -78,11 +78,11 @@ SPI_init(&TMC_SPI_Channel[0]);
 // Creating buffer arrays.
 uint8_t data_tx[4] = { 0xDE, 0xAD, 0xBE, 0xEF };
 uint8_t data_rx[4] = { 0x00, 0x00, 0x00, 0x00 };
-// Transmitting 4 bytes without direct read-back on interface SPI channel 0 with a timeout of 1 second.
+// Transmitting 4 bytes without direct read-back on SPI channel 0 with a timeout of 1 second.
 SPI_txRequest(&TMC_SPI_Channel[0], &data_rx[0], 4, 1000);
-// Transmitting 4 bytes with simultanious read-back on interface SPI channel 0 with a timeout of 1 second.
+// Transmitting 4 bytes with simultanious read-back on SPI channel 0 with a timeout of 1 second.
 SPI_txrx(&TMC_SPI_Channel[0], &data_tx[0], &data_rx[0], 4, 1000);
-// Requesting RX for 10 bytes on interface SPI channel 0 using internal buffers and a timeout of 1 second.
+// Requesting RX for 4 bytes on SPI channel 0 with a timeout of 1 second.
 SPI_rxRequest(&TMC_SPI_Channel[0], &data_rx[0], 4, 1000);
 ```
 
@@ -98,11 +98,11 @@ SPI_init(&TMC_SPI_Channel[0]);
 // Creating buffer arrays.
 uint8_t data_tx[4] = { 0xDE, 0xAD, 0xBE, 0xEF };
 uint8_t data_rx[4] = { 0x00, 0x00, 0x00, 0x00 };
-// Transmitting 4 bytes without direct read-back on interface SPI channel 0 with a timeout of 1 second.
+// Transmitting 4 bytes without direct read-back on SPI channel 0 with a timeout of 1 second.
 TMC_SPI_Channel[0].con.txRequest(&data_rx[0], 4, 1000);
-// Transmitting 4 bytes with simultanious read-back on interface SPI channel 0 with a timeout of 1 second.
+// Transmitting 4 bytes with simultanious read-back on SPI channel 0 with a timeout of 1 second.
 TMC_SPI_Channel[0].con.txrx(&data_tx[0], &data_rx[0], 4, 1000);
-// Requesting RX for 10 bytes on interface SPI channel 0 using internal buffers and a timeout of 1 second.
+// Requesting RX for 4 bytes on SPI channel 0 with a timeout of 1 second.
 TMC_SPI_Channel[0].con.rxRequest(&data_rx[0], 4, 1000);
 ```
 
