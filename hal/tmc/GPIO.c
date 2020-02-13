@@ -63,6 +63,7 @@ TMC_IO ios[TMC_IO_COUNT] = {
 void GPIO_initIO(TMC_IO *io)
 {
 	// Configure output level
+	HAL_GPIO_WritePin(io->port, io->init.Pin, GPIO_PIN_RESET);
 	HAL_GPIO_Init(io->port, &io->init);
 	if(io->isGPIO)
 		HAL_GPIO_WritePin(io->port, io->init.Pin, io->resetState);
@@ -92,7 +93,7 @@ void GPIO_setToOutput(TMC_IO *io)
 
 void GPIO_setHigh(TMC_IO *io)
 {
-	HAL_GPIO_WritePin(io->port, io->pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(io->port, io->init.Pin, GPIO_PIN_SET);
 }
 
 void GPIO_setLow(TMC_IO *io)

@@ -806,12 +806,12 @@ static void enableDriver(DriverState state)
 }
 
 
-void TMC5160_init(TMC_Board *board, uint8_t axis)
+void TMC5160_init(TMC_Board *board)
 {
 	for(size_t i = 0; i < TMC5160_REGISTER_COUNT; i++)
 		board->config->shadowRegister[i] = 0;
 
-	tmc5160_initConfig(&TMC5160[axis]);
+	tmc5160_initConfig(&TMC5160[board->axis]);
 
 	board->config->reset = reset;
 	board->config->restore = restore;

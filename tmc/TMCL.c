@@ -502,7 +502,7 @@ static void GetGlobalParameter()
 		ActualReply.Value.Int32 = 0;
 		break;
 	case 4:
-		ActualReply.Value.Int32 = (ID_STATE_NOT_IN_FW << 24) | (0 << 16) | (ID_STATE_DONE << 8) | ID_EVALBOARD;
+		ActualReply.Value.Int32 = (ID_STATE_NOT_IN_FW << 24) | (0 << 16) | (ID_STATE_DONE << 8) | board[0].id;
 		break;
 	case 5: // Get hardware ID
 		ActualReply.Value.Int32 = 0xFF;
@@ -517,13 +517,13 @@ static void boardAssignment(void)
 {
 	switch(ActualCommand.Type) {
 	case 3:
-		ActualReply.Value.Int32 = (ID_STATE_WAIT_LOW << 24) | (0 << 16) | (ID_STATE_WAIT_LOW << 8) | ID_EVALBOARD;
+		ActualReply.Value.Int32 = (ID_STATE_WAIT_LOW << 24) | (0 << 16) | (ID_STATE_WAIT_LOW << 8) | board[0].id;
 		break;
 	case 4:
-		ActualReply.Value.Int32 = (ID_STATE_NOT_IN_FW << 24) | (0 << 16) | (ID_STATE_DONE << 8) | ID_EVALBOARD;
+		ActualReply.Value.Int32 = (ID_STATE_NOT_IN_FW << 24) | (0 << 16) | (ID_STATE_DONE << 8) | board[0].id;
 		break;
 	default:
-		ActualReply.Value.Int32 = (ID_STATE_NOT_IN_FW << 24) | (0 << 16) | (ID_STATE_DONE << 8) | ID_EVALBOARD;
+		ActualReply.Value.Int32 = (ID_STATE_NOT_IN_FW << 24) | (0 << 16) | (ID_STATE_DONE << 8) | board[0].id;
 		break;
 	}
 }

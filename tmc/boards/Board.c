@@ -6,19 +6,43 @@
  */
 
 #include "Board.h"
+#include "tmc/ic/TMC5160/TMC5160.h"
 
-extern void TMC5160_init(TMC_Board *board, uint8_t axis);
+extern void Error_Handler(void);
+extern void TMC5160_init(TMC_Board *board);
 
-void Board_init(TMC_Board *board, uint8_t axis)
+TMC_Board board[TMC_AXES_COUNT] = {
+	{
+		.id = BOARD_0
+	},
+	{
+		.id = BOARD_1
+	},
+	{
+		.id = BOARD_2
+	}
+};
+
+void Boards_init(void)
 {
-#ifdef BOARD
-#ifdef TMC5160_shield
-	TMC5160_init(board, axis);
-	//board_setDummyFunctions(board, axis);
-#endif
-#else
-	board_setDummyFunctions(board, axis);
-#endif
+	ConfigurationTypeDef config[TMC_BOARD_COUNT];
+	for(size_t i = 0; i < TMC_BOARD_COUNT; i++) {
+		board[i].config = &config[i];
+		board[i].axis = (uint8_t) i;
+		Board_init(&board[i]);
+	}
+}
+
+void Board_init(TMC_Board *board)
+{
+	switch(board->id) {
+	case ID_TMC5160:
+		TMC5160_init(board);
+		break;
+	default:
+		board_setDummyFunctions(board);
+		break;
+	}
 }
 
 static void deInit(void) {}
@@ -97,7 +121,7 @@ static void periodicJob(uint32_t tick)
 	UNUSED(tick);
 }
 
-void board_setDummyFunctions(TMC_Board *board, uint8_t axis)
+void board_setDummyFunctions(TMC_Board *board)
 {
 	board->config->reset     = delegationReturn;
 	board->config->restore   = delegationReturn;

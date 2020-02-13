@@ -31,11 +31,7 @@ int main(void) {
 	SPIX_init();
 	USB_Init();
 
-	ConfigurationTypeDef config[TMC_BOARD_COUNT];
-	for(size_t i = 0; i < TMC_BOARD_COUNT; i++) {
-		board[i].config = &config[i];
-		Board_init(&board[i], (uint8_t)i);
-	}
+	Boards_init();
 
 	tmcl_init();
 

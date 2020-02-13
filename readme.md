@@ -5,7 +5,8 @@ The TMC-EvalShield is the TRINAMIC Evaluation Firmware for STMicroelectronics ST
 This aims to simplify the evaluation process of our motion controller shields.  
 
 ## Current state
-Currently only Nucleo STM32F103XX is supported.
+Currently only Nucleo STM32F103XX is supported.  
+Currently only TMC5160-SHIELD is supported.
 
 ## Setup
 1. **Cloning**  

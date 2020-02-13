@@ -12,6 +12,10 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+// Board IDs
+#define ID_NONE 0
+#define ID_TMC5160 16
+
 typedef struct {
 	unsigned int read;
 	unsigned int wrote;

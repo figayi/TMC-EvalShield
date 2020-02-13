@@ -11,18 +11,16 @@
 #include "Definitions.h"
 #include "tmc/helpers/API_Header.h"
 
-#define TMC_AXES_COUNT 3
-#define TMC_BOARD_COUNT TMC_AXES_COUNT
+////////////////////////////////////////////////////////////////////////////////
+// User defines
 
-#ifndef BOARD
-#define BOARD
-#define TMC5160_shield
-#endif
+#define TMC_AXES_COUNT   3
+#define TMC_BOARD_COUNT  TMC_AXES_COUNT
+#define BOARD_0          ID_TMC5160
+#define BOARD_1          ID_NONE
+#define BOARD_2          ID_NONE
 
-#define ID_TMC5160 16
-#if defined(TMC5160_shield)
-#define ID_EVALBOARD ID_TMC5160
-#endif
+////////////////////////////////////////////////////////////////////////////////
 
 typedef enum {
 	DRIVER_DISABLE,
@@ -38,7 +36,8 @@ typedef enum {
 
 typedef struct {
 	void *type;
-	uint8_t  id;
+	uint16_t id;
+	uint8_t axis;
 	uint32_t errors;
 	uint32_t VMMax;
 	uint32_t VMMin;
@@ -77,7 +76,8 @@ typedef struct {
 
 TMC_Board board[TMC_AXES_COUNT];
 
-void Board_init(TMC_Board *board, uint8_t axis);
-void board_setDummyFunctions(TMC_Board *board, uint8_t axis);
+void Boards_init(void);
+void Board_init(TMC_Board *board);
+void board_setDummyFunctions(TMC_Board *board);
 
 #endif /* TMC_BOARDS_BOARD_H_ */
