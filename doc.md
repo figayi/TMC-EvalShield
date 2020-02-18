@@ -36,11 +36,14 @@ void GPIO_setToOutput(TMC_IO *io);
 void GPIO_setHigh(TMC_IO *io);
 void GPIO_setLow(TMC_IO *io);
 void GPIO_setFloating(TMC_IO *io);
+void GPIO_setToState(TMC_IO *io, TMC_IO_State state);
+TMC_IO_State GPIO_getState(const TMC_IO *io);
 ```
 
 Using `GPIO_getIO(...)` the IO for a given MCU pin number can be obtained comfortably.
 If there is no IO for that pin number (i.e. not connected), it returns `NULL`.  
-The other manipulating functions should be self explainatory.
+The other manipulating functions should be self explainatory.  
+Pin states are described by the `TMC_IO_State` enum. Available states are `TMC_IO_LOW`, `TMC_IO_HIGH` and `TMC_IO_OPEN`.
 
 ### TMC Connection interface
 Modules using the *TMC Connection* interface (`TMC_Connection`) can be used for communication in a more abstract and collective manner.  
