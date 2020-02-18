@@ -19,7 +19,7 @@
 
 void SystemClock_Config(void);
 
-const char *VersionString = MODULE_ID"V308";
+const char *VersionString = MODULE_ID"V100";
 
 int main(void) {
 	HAL_Init();

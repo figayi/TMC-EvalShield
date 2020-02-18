@@ -16,11 +16,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 // User defines
 
-#define TMC_AXES_COUNT   3
+#define TMC_AXES_COUNT   4
 #define TMC_BOARD_COUNT  TMC_AXES_COUNT
 #define BOARD_0          ID_TMC5160
-#define BOARD_1          ID_NONE
-#define BOARD_2          ID_NONE
+#define BOARD_1          ID_TMC5160
+#define BOARD_2          ID_TMC5160
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -79,7 +79,7 @@ typedef struct tmc_board_t {
 	DriverState driverState;
 } TMC_Board;
 
-TMC_Board board[TMC_AXES_COUNT];
+TMC_Board board[TMC_BOARD_COUNT];
 
 void Boards_init(void);
 void Board_init(TMC_Board *board);

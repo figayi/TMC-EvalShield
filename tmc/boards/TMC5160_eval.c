@@ -809,11 +809,7 @@ static void enableDriver(DriverState state)
 
 static uint8_t isAlive(TMC_Board *b)
 {
-//	GPIO_setToInput(TMC_SPI_Channel[b->axis].cs);
-//	uint8_t alive = (GPIO_getState(TMC_SPI_Channel[b->axis].cs) == TMC_IO_HIGH);
-//	GPIO_initIO(TMC_SPI_Channel[b->axis].cs);
-//	return alive;
-	return 1;
+	return (TMC5160_FIELD_READ(b->axis, TMC5160_DRVSTATUS, TMC5160_STST_MASK, TMC5160_STST_SHIFT) == 1);
 }
 
 

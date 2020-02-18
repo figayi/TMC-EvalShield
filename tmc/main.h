@@ -14,7 +14,7 @@ extern "C" {
 
 #include "stm32f1xx_hal.h"
 
-#define MODULE_ID "0012"
+#define MODULE_ID "0019"
 
 void Error_Handler(void);
 void deInit(void);

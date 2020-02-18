@@ -11,7 +11,7 @@
 extern void Error_Handler(void);
 extern void TMC5160_init(TMC_Board *board);
 
-TMC_Board board[TMC_AXES_COUNT] = {
+TMC_Board board[TMC_BOARD_COUNT] = {
 	{
 		.id = BOARD_0
 	},
