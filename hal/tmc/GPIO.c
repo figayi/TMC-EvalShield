@@ -17,7 +17,8 @@ TMC_IO ios[TMC_IO_COUNT] = {
 			.Mode = GPIO_MODE_IT_RISING,
 			.Pull = GPIO_NOPULL
 		},
-		.isGPIO = 0
+		.isGPIO = 0,
+		.isOpen = 0
 	},
 	// SPI0 Chip Select
 	{
@@ -26,11 +27,12 @@ TMC_IO ios[TMC_IO_COUNT] = {
 		.init = {
 			.Pin = GPIO_PIN_6,
 			.Mode = GPIO_MODE_OUTPUT_PP,
-			.Pull = GPIO_NOPULL,
+			.Pull = GPIO_PULLUP,
 			.Speed = GPIO_SPEED_FREQ_HIGH
 		},
 		.isGPIO = 1,
-		.resetState = GPIO_PIN_SET
+		.resetState = GPIO_PIN_SET,
+		.isOpen = 0
 	},
 	// SPI1 Chip Select
 	{
@@ -43,7 +45,8 @@ TMC_IO ios[TMC_IO_COUNT] = {
 			.Speed = GPIO_SPEED_FREQ_LOW
 		},
 		.isGPIO = 1,
-		.resetState = GPIO_PIN_SET
+		.resetState = GPIO_PIN_SET,
+		.isOpen = 0
 	},
 	// SPI2 Chip Select
 	{
@@ -56,15 +59,26 @@ TMC_IO ios[TMC_IO_COUNT] = {
 			.Speed = GPIO_SPEED_FREQ_LOW
 		},
 		.isGPIO = 1,
-		.resetState = GPIO_PIN_SET
+		.resetState = GPIO_PIN_SET,
+		.isOpen = 0
 	}
 };
 
+static void setConfiguration(TMC_IO *io, GPIO_InitTypeDef *config);
+
+static void setConfiguration(TMC_IO *io, GPIO_InitTypeDef *config)
+{
+	io->config.Mode = config->Mode;
+	io->config.Pin = config->Pin;
+	io->config.Pull = config->Pull;
+	io->config.Speed = config->Speed;
+	HAL_GPIO_Init(io->port, config);
+}
+
 void GPIO_initIO(TMC_IO *io)
 {
-	// Configure output level
 	HAL_GPIO_WritePin(io->port, io->init.Pin, GPIO_PIN_RESET);
-	HAL_GPIO_Init(io->port, &io->init);
+	setConfiguration(io, &io->init);
 	if(io->isGPIO)
 		HAL_GPIO_WritePin(io->port, io->init.Pin, io->resetState);
 }
@@ -79,31 +93,67 @@ TMC_IO *GPIO_getIO(uint8_t number)
 
 void GPIO_setToInput(TMC_IO *io)
 {
-	GPIO_InitTypeDef init = io->init;
-	init.Mode = GPIO_MODE_INPUT;
-	HAL_GPIO_Init(io->port, &init);
+	GPIO_InitTypeDef config = io->config;
+	config.Mode = GPIO_MODE_INPUT;
+	setConfiguration(io, &config);
+	io->isOpen = 0;
 }
 
 void GPIO_setToOutput(TMC_IO *io)
 {
-	GPIO_InitTypeDef init = io->init;
-	init.Mode = GPIO_MODE_OUTPUT_PP;
-	HAL_GPIO_Init(io->port, &init);
+	GPIO_InitTypeDef config = io->config;
+	config.Mode = GPIO_MODE_OUTPUT_PP;
+	setConfiguration(io, &config);
 }
 
 void GPIO_setHigh(TMC_IO *io)
 {
 	HAL_GPIO_WritePin(io->port, io->init.Pin, GPIO_PIN_SET);
+	io->isOpen = 0;
 }
 
 void GPIO_setLow(TMC_IO *io)
 {
 	HAL_GPIO_WritePin(io->port, io->init.Pin, GPIO_PIN_RESET);
+	io->isOpen = 0;
 }
 
 void GPIO_setFloating(TMC_IO *io)
 {
-	// TODO
+	GPIO_setToInput(io);
+	io->isOpen = 1;
+}
+
+void GPIO_setToState(TMC_IO *io, TMC_IO_State state)
+{
+	switch(state) {
+	case TMC_IO_LOW:
+		GPIO_setLow(io);
+		break;
+	case TMC_IO_HIGH:
+		GPIO_setHigh(io);
+		break;
+	case TMC_IO_OPEN:
+		GPIO_setFloating(io);
+		break;
+	default:
+		break;
+	}
+}
+
+TMC_IO_State GPIO_getState(const TMC_IO *io)
+{
+	if(io->isOpen == 1)
+		return TMC_IO_OPEN;
+
+	switch(HAL_GPIO_ReadPin(io->port, io->init.Pin)) {
+	case GPIO_PIN_RESET:
+		return TMC_IO_LOW;
+	case GPIO_PIN_SET:
+		return TMC_IO_HIGH;
+	}
+
+	return TMC_IO_NOCHANGE;
 }
 
 void GPIO_init(void) {

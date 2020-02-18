@@ -38,10 +38,11 @@ typedef enum {
 	TMC_ERROR_NOT_DONE = 0x20
 } TMC_Error;
 
-typedef struct {
+typedef struct tmc_board_t {
 	void *type;
 	uint16_t id;
 	uint8_t axis;
+	uint8_t alive;
 	uint32_t errors;
 	uint32_t VMMax;
 	uint32_t VMMin;

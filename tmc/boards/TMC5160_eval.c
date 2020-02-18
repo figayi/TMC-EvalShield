@@ -37,6 +37,7 @@ static uint32_t SAP(uint8_t type, uint8_t motor, int32_t value);
 static void readRegister(uint8_t motor, uint8_t address, int32_t *value);
 static void writeRegister(uint8_t motor, uint8_t address, int32_t value);
 static uint32_t getMeasuredSpeed(uint8_t motor, int32_t *value);
+static uint8_t isAlive(TMC_Board *b);
 
 void tmc5160_writeDatagram(uint8_t motor, uint8_t address, uint8_t x1, uint8_t x2, uint8_t x3, uint8_t x4);
 void tmc5160_writeInt(uint8_t motor, uint8_t address, int value);
@@ -749,6 +750,7 @@ static void periodicJob(uint32_t tick)
 	for(int motor = 0; motor < TMC_AXES_COUNT; motor++)
 	{
 		tmc5160_periodicJob(motor, tick, &TMC5160[motor], board[motor].config);
+		board[motor].alive = isAlive(&board[motor]);
 	}
 }
 
@@ -803,6 +805,15 @@ static void enableDriver(DriverState state)
 		__NOP();
 	else if(state == DRIVER_ENABLE)
 		__NOP();
+}
+
+static uint8_t isAlive(TMC_Board *b)
+{
+//	GPIO_setToInput(TMC_SPI_Channel[b->axis].cs);
+//	uint8_t alive = (GPIO_getState(TMC_SPI_Channel[b->axis].cs) == TMC_IO_HIGH);
+//	GPIO_initIO(TMC_SPI_Channel[b->axis].cs);
+//	return alive;
+	return 1;
 }
 
 

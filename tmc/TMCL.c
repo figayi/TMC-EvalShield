@@ -385,6 +385,8 @@ void tmcl_process()
 	if(resetRequest)
 		reset();
 
+
+
 	ActualReply.IsSpecial = 0;
 
 	for(size_t i = 0; i < numberOfInterfaces; i++)
@@ -506,6 +508,9 @@ static void GetGlobalParameter()
 		break;
 	case 5: // Get hardware ID
 		ActualReply.Value.Int32 = 0xFF;
+		break;
+	case 6: // Get current number of axes
+		ActualReply.Value.UInt32 = board[0].alive + board[1].alive + board[2].alive;
 		break;
 	default:
 		ActualReply.Status = REPLY_INVALID_TYPE;

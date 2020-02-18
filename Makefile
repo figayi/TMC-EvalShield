@@ -15,7 +15,7 @@ include version.txt
 ######################################
 # target
 ######################################
-TARGET = TMC-EvalShield_v$(VERSION)
+TARGET = TMC-EvalShield
 
 
 ######################################
