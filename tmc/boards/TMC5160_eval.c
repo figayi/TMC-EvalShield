@@ -771,7 +771,10 @@ static void enableDriver(DriverState state)
 
 static uint8_t isAlive(TMC_Board *b)
 {
-	return (TMC5160_FIELD_READ(motorToIC(b->axis), TMC5160_DRVSTATUS, TMC5160_STST_MASK, TMC5160_STST_SHIFT) == 1);
+	//return 1;
+	return ((TMC5160_FIELD_READ(motorToIC(b->axis), TMC5160_DRVSTATUS, TMC5160_STST_MASK, TMC5160_STST_SHIFT) == 1)
+			&& (TMC5160_FIELD_READ(motorToIC(b->axis), TMC5160_DRVSTATUS, TMC5160_OLA_MASK, TMC5160_OLA_SHIFT) == 0)
+			&& (tmc5160_readInt(motorToIC(b->axis), TMC5160_GCONF) == tmc5160_defaultRegisterResetState[TMC5160_GCONF]));
 }
 
 
@@ -781,6 +784,9 @@ void TMC5160_init(TMC_Board *board)
 		board->config.shadowRegister[i] = 0;
 
 	tmc5160_init(motorToIC(board->axis), board->axis, &board->config, tmc5160_defaultRegisterResetState);
+
+	for(size_t i = 0; i < TMC_AXES_COUNT; i++)
+		vmax_position[i] = motorToIC(i)->config->shadowRegister[TMC5160_VMAX];
 
 	board->config.reset = reset;
 	board->config.restore = restore;

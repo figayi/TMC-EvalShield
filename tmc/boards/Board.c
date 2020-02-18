@@ -13,13 +13,16 @@ extern void TMC5160_init(TMC_Board *board);
 
 TMC_Board board[TMC_BOARD_COUNT] = {
 	{
-		.id = BOARD_0
+		.id = BOARD_0,
+		.alive = 0
 	},
 	{
-		.id = BOARD_1
+		.id = BOARD_1,
+		.alive = 0
 	},
 	{
-		.id = BOARD_2
+		.id = BOARD_2,
+		.alive = 0
 	}
 };
 
