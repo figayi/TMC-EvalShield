@@ -1,5 +1,19 @@
 # Operational guide
 
+## Flashing
+
+Flash any hex file from the release section via the ST-LINK software suite. Power cycle the TMC-EvalShield base board after that.
+
+## Quick start with TMCL-IDE
+
+Get started fast using the [TMCL-IDE](https://www.trinamic.com/support/software/tmcl-ide/).  
+
+1. Attach the shields to your TMC-EvalShield base board.
+2. Attach and turn on the power source for the connected shields.
+3. Connect the TMC-EvalShield base board via USB to your PC.
+4. Open up the TMCL-IDE, open the respective COM port, change the baudrate to 115200 and click connect.
+5. Now you can use all the tools the TMCL-IDE provides.
+
 ## GPIO manipulation
 
 GPIOs are managed with the `TMC_IO` interface.
