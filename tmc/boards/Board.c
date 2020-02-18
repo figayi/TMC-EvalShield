@@ -25,9 +25,7 @@ TMC_Board board[TMC_BOARD_COUNT] = {
 
 void Boards_init(void)
 {
-	ConfigurationTypeDef config[TMC_BOARD_COUNT];
 	for(size_t i = 0; i < TMC_BOARD_COUNT; i++) {
-		board[i].config = &config[i];
 		board[i].axis = (uint8_t) i;
 		Board_init(&board[i]);
 	}
@@ -123,8 +121,8 @@ static void periodicJob(uint32_t tick)
 
 void board_setDummyFunctions(TMC_Board *board)
 {
-	board->config->reset     = delegationReturn;
-	board->config->restore   = delegationReturn;
+	board->config.reset     = delegationReturn;
+	board->config.restore   = delegationReturn;
 
 	board->deInit            = deInit;
 	board->periodicJob       = periodicJob;

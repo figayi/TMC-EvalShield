@@ -47,7 +47,7 @@ typedef struct tmc_board_t {
 	uint32_t VMMax;
 	uint32_t VMMin;
 	unsigned char numberOfMotors;
-	ConfigurationTypeDef *config;
+	ConfigurationTypeDef config;
 	uint32_t (*left)                (uint8_t motor, int32_t velocity);            // move left with velocity <velocity>
 	uint32_t (*right)               (uint8_t motor, int32_t velocity);            // move right with velocity <velocity>
 	uint32_t (*rotate)              (uint8_t motor, int32_t velocity);            // move right with velocity <velocity>

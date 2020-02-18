@@ -510,7 +510,7 @@ static void GetGlobalParameter()
 		ActualReply.Value.Int32 = 0xFF;
 		break;
 	case 6: // Get current number of axes
-		if((board[0].config->state == CONFIG_READY) && (board[1].config->state == CONFIG_READY) && (board[2].config->state == CONFIG_READY))
+		if((board[0].config.state == CONFIG_READY) && (board[1].config.state == CONFIG_READY) && (board[2].config.state == CONFIG_READY))
 			ActualReply.Value.UInt32 = board[0].alive + board[1].alive + board[2].alive;
 		else
 			ActualReply.Value.UInt32 = 0;
@@ -553,11 +553,11 @@ static void boardsReset(void)
 {
 	switch(ActualCommand.Type) {
 	case 0:
-		if(!board[ActualCommand.Motor].config->reset())
+		if(!board[ActualCommand.Motor].config.reset())
 			ActualReply.Status = REPLY_WRITE_PROTECTED;
 		break;
 	case 2:
-		if(!board[ActualCommand.Motor].config->reset())
+		if(!board[ActualCommand.Motor].config.reset())
 			ActualReply.Status = REPLY_WRITE_PROTECTED;
 		break;
 	default:
