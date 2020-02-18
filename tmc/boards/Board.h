@@ -16,7 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // User defines
 
-#define TMC_AXES_COUNT   4
+#define TMC_AXES_COUNT   3
 #define TMC_BOARD_COUNT  TMC_AXES_COUNT
 #define BOARD_0          ID_TMC5160
 #define BOARD_1          ID_TMC5160
