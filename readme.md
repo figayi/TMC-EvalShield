@@ -30,10 +30,10 @@ cd ..
 
 ### Building
 
-For a build guide, read build.md.
+For a build guide, read [build.md](build.md).
 
 ## Documentation
-For documentation, read doc.md.
+For documentation, read [doc.md](doc.md).
 
 ## Operational guide
-For an operational guide showing how to get started with the basics, read guide.md.
+For an operational guide showing how to get started with the basics, read [guide.md](guide.md).
