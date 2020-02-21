@@ -25,10 +25,14 @@ If it is shown as a list, append the new entries `<MinGW Root>\bin` and `<GNU Ar
 ### Actually building
 
 1. Open command prompt.  
-2. `cd` to the TMC-EvalShield root folder.  
+2. `cd` into the TMC-EvalShield root folder.  
 3. Enter `mingw32-make`.  
 4. Binaries should be in the build directory.  
 
 ## Linux
 
-TODO
+1. Install `build-essential` package.  
+2. Install `gcc-arm-none-eabi` package.  
+3. `cd` into the TMC-EvalShield root folder.  
+4. Run `make`.  
+5. Binaries should be in the build directory.  
