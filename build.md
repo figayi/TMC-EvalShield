@@ -31,6 +31,9 @@ If it is shown as a list, append the new entries `<MinGW Root>\bin` and `<GNU Ar
 
 ## Linux
 
+This requires your favorite package manager to be set up. On debian and its derivatives,
+`[sudo] apt-get install <package name>` can be used to install the required packages.
+
 1. Install `build-essential` package.  
 2. Install `gcc-arm-none-eabi` package.  
 3. `cd` into the TMC-EvalShield root folder.  
