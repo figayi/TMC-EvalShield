@@ -546,8 +546,8 @@ static uint32_t handleParameter(uint8_t readWrite, uint8_t motor, uint8_t type, 
 		} else if(readWrite == TMC5160_WRITE) {
 			TMC5160_FIELD_WRITE(motorToIC(motor), TMC5160_SWMODE, TMC5160_SG_STOP_MASK, TMC5160_SG_STOP_SHIFT, (*value)? 1:0);
 
-			*value = MIN(0xFFFFF, (1<<24) / ((*value)? *value:1));
-			tmc5160_writeInt(motorToIC(motor), TMC5160_TCOOLTHRS, *value);
+			buffer = MIN(0xFFFFF, (1 << 24) / ((*value) ? *value : 1));
+			tmc5160_writeInt(motorToIC(motor), TMC5160_TCOOLTHRS, buffer);
 		}
 		break;
 	case 182:
@@ -556,8 +556,8 @@ static uint32_t handleParameter(uint8_t readWrite, uint8_t motor, uint8_t type, 
 			buffer = tmc5160_readInt(motorToIC(motor), TMC5160_TCOOLTHRS);
 			*value = MIN(0xFFFFF, (1<<24) / ((buffer)? buffer:1));
 		} else if(readWrite == TMC5160_WRITE) {
-			*value = MIN(0xFFFFF, (1<<24) / ((*value)? *value:1));
-			tmc5160_writeInt(motorToIC(motor), TMC5160_TCOOLTHRS, *value);
+			buffer = MIN(0xFFFFF, (1<<24) / ((*value)? *value:1));
+			tmc5160_writeInt(motorToIC(motor), TMC5160_TCOOLTHRS, buffer);
 		}
 		break;
 	case 184:

@@ -7,6 +7,8 @@ Flash any hex file from the release section via the ST-LINK software suite. Powe
 ## Quick start with TMCL-IDE
 
 Get started fast using the [TMCL-IDE](https://www.trinamic.com/support/software/tmcl-ide/).  
+The order of the following steps is important! The motion controller needs to be powered before powering the base board,
+otherwise initialization will fail.  
 
 1. Attach the shields to your TMC-EvalShield base board.
 2. Attach and turn on the power source for the connected shields.
