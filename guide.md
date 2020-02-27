@@ -70,7 +70,7 @@ UART0.con.rxN(&data[0], 256);
 
 ## UART RX/TX with multiple interfaces
 
-Interfaces can be operated as a batch using the TMC_Connection interface.
+Interfaces can be operated as a batch using the `TMC_Connection` interface.
 
 ```C
 #include "UART.h"
