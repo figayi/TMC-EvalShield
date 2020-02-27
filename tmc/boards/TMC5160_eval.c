@@ -723,7 +723,6 @@ static void checkErrors(uint32_t tick)
 
 static uint32_t userFunction(uint8_t type, uint8_t motor, int32_t *value)
 {
-	uint32_t buffer;
 	uint32_t errors = 0;
 
 	UNUSED(type);
@@ -785,8 +784,7 @@ void TMC5160_init(TMC_Board *board)
 
 	tmc5160_init(motorToIC(board->axis), board->axis, &board->config, tmc5160_defaultRegisterResetState);
 
-	for(size_t i = 0; i < TMC_AXES_COUNT; i++)
-		vmax_position[i] = motorToIC(i)->config->shadowRegister[TMC5160_VMAX];
+	vmax_position[board->axis] = motorToIC(board->axis)->config->shadowRegister[TMC5160_VMAX];
 
 	board->config.reset = reset;
 	board->config.restore = restore;
