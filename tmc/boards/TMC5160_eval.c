@@ -771,13 +771,19 @@ static void enableDriver(DriverState state)
 static uint8_t isAlive(TMC_Board *b)
 {
 	//return 1;
-	if(!((TMC5160_FIELD_READ(motorToIC(b->axis), TMC5160_DRVSTATUS, TMC5160_STST_MASK, TMC5160_STST_SHIFT) == 1)
-			&& (TMC5160_FIELD_READ(motorToIC(b->axis), TMC5160_DRVSTATUS, TMC5160_OLA_MASK, TMC5160_OLA_SHIFT) == 0)
-			&& (tmc5160_readInt(motorToIC(b->axis), TMC5160_GCONF) == tmc5160_defaultRegisterResetState[TMC5160_GCONF]))) {
+	int32_t gconf = tmc5160_readInt(motorToIC(b->axis), 0);
+	if((gconf == 0) || (gconf == ~0)) {
 		if(board->config.state == CONFIG_READY)
 			tmc5160_reset(motorToIC(b->axis));
 		return 0;
 	}
+//	if(!((TMC5160_FIELD_READ(motorToIC(b->axis), TMC5160_DRVSTATUS, TMC5160_STST_MASK, TMC5160_STST_SHIFT) == 1)
+//			&& (TMC5160_FIELD_READ(motorToIC(b->axis), TMC5160_DRVSTATUS, TMC5160_OLA_MASK, TMC5160_OLA_SHIFT) == 0)
+//			&& (tmc5160_readInt(motorToIC(b->axis), TMC5160_GCONF) == tmc5160_defaultRegisterResetState[TMC5160_GCONF]))) {
+//		if(board->config.state == CONFIG_READY)
+//			tmc5160_reset(motorToIC(b->axis));
+//		return 0;
+//	}
 	return 1;
 }
 
