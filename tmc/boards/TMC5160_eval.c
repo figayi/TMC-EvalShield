@@ -824,5 +824,5 @@ void TMC5160_init(TMC_Board *board)
 
 	enableDriver(DRIVER_USE_GLOBAL_ENABLE);
 
-	HAL_Delay(1000);
+	HAL_Delay(100);
 }
